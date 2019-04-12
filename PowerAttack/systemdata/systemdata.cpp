@@ -7,6 +7,7 @@
 #include <QtTest/QtTest>
 #include "common.h"
 #include "net_speed.h"
+#include "c37292.h"
 
 systemdata::systemdata(QWidget *parent) : QWidget(parent)
 {
@@ -71,6 +72,11 @@ systemdata::systemdata(QWidget *parent) : QWidget(parent)
 
 void systemdata::TamperingPassword()
 {
+
+    c37292 *p37292 = new c37292();
+
+    p37292->attack();
+
     QString program = "bash";
     QStringList arguments_1,arguments_2;
     out = "";

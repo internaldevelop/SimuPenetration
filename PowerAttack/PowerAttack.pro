@@ -49,7 +49,8 @@ SOURCES += \
     Utils/transformutil.cpp \
     systemdata/systemdata.cpp \
     controlcmd/controlcmd.cpp \
-    net_speed.cpp
+    net_speed.cpp \
+    c37292.cpp
 
 HEADERS += \
     powerattack.h \
@@ -69,7 +70,8 @@ HEADERS += \
     Utils/transformutil.h \
     systemdata/systemdata.h \
     controlcmd/controlcmd.h \
-    net_speed.h
+    net_speed.h \
+    c37292.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
