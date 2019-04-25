@@ -1,4 +1,4 @@
-#include "controlcmd.h"
+#include "superprivilege.h"
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QPrinter>
@@ -11,9 +11,8 @@
 
 #include <Utils/csysutils.h>
 #include <Utils/cwebutils.h>
-#include "c37292.h"
 
-controlcmd::controlcmd(QWidget *parent) : QWidget(parent)
+superprivilege::superprivilege(QWidget *parent) : QWidget(parent)
 {
 
     // 初始化页面
@@ -30,56 +29,49 @@ controlcmd::controlcmd(QWidget *parent) : QWidget(parent)
     main_layout->setContentsMargins(0,0,0,0);
     setLayout(main_layout);
 
-    connect(m_buttonStopPLC, SIGNAL(clicked()), this, SLOT(stopPLC()));
-    connect(m_buttonStartPLC, SIGNAL(clicked()), this, SLOT(startPLC()));
+//    connect(m_buttonVertical, SIGNAL(clicked()), this, SLOT(xxx()));
+//    connect(m_buttonHorizontal, SIGNAL(clicked()), this, SLOT(xxx()));
 
     this->setAutoFillBackground(true);
 }
 
-
-void controlcmd::initWidget()
+void superprivilege::initWidget()
 {
     m_widget = new QWidget();
     m_textResult = new QTextBrowser();
     m_textResult->setFixedSize(680,320);
 
-    m_inputIp = new QLineEdit();
-    m_inputIp->setText("127.0.0.1");
-    m_inputIp->setFixedSize(100, 24);
-
-    m_inputPort = new QLineEdit();
-    m_inputPort->setText("6666");
-    m_inputPort->setFixedSize(100, 24);
-
     // 设置
     QFont fontButton;
     fontButton.setPointSize(13);
-    m_buttonStopPLC= new QPushButton();
-    m_buttonStopPLC->setText(tr("关停PLC"));
-    m_buttonStopPLC->setFont(fontButton);
+    m_buttonVertical= new QPushButton();
+    m_buttonVertical->setText(tr("纵向提权"));
+    m_buttonVertical->setFont(fontButton);
 
-    m_buttonStartPLC= new QPushButton();
-    m_buttonStartPLC->setText(tr("开启PLC"));
-    m_buttonStartPLC->setFont(fontButton);
+    m_buttonHorizontal= new QPushButton();
+    m_buttonHorizontal->setText(tr("横向提权"));
+    m_buttonHorizontal->setFont(fontButton);
+
+    m_buttonOfflineAttack= new QPushButton();
+    m_buttonOfflineAttack->setText(tr("离线密码破解"));
+    m_buttonOfflineAttack->setFont(fontButton);
+
+    m_buttonOnlineAttack= new QPushButton();
+    m_buttonOnlineAttack->setText(tr("在线密码攻击"));
+    m_buttonOnlineAttack->setFont(fontButton);
 
     // 水平布局-1
     QHBoxLayout *widget_1_H_layout = new QHBoxLayout();
-    QLabel * labeluser = new QLabel();
-    labeluser->setText("请输入IP：");
-    widget_1_H_layout->addWidget(labeluser, 0, Qt::AlignLeft);
-    widget_1_H_layout->addWidget(m_inputIp,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
-
-    QLabel * labelpwd = new QLabel();
-    labelpwd->setText("请输入端口號：");
-    widget_1_H_layout->addWidget(labelpwd);//, 0, Qt::AlignLeft);
-    widget_1_H_layout->addWidget(m_inputPort,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
-
+    widget_1_H_layout->addWidget(m_buttonVertical,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+    widget_1_H_layout->addWidget(m_buttonHorizontal,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
     widget_1_H_layout->setContentsMargins(20, 5, 20, 5);
+
     // 水平布局-2
     QHBoxLayout *widget_2_H_layout = new QHBoxLayout();
-    widget_2_H_layout->addWidget(m_buttonStopPLC);//, 0, Qt::AlignLeft);
-    widget_2_H_layout->addWidget(m_buttonStartPLC);//, 0, Qt::AlignLeft);
+    widget_2_H_layout->addWidget(m_buttonOfflineAttack);//, 0, Qt::AlignLeft);
+    widget_2_H_layout->addWidget(m_buttonOnlineAttack);//, 0, Qt::AlignLeft);
     widget_2_H_layout->setContentsMargins(20, 5, 20, 5);
+
     // 垂直布局
     QVBoxLayout *widget_1_V_layout = new QVBoxLayout();
     widget_1_V_layout->addLayout(widget_1_H_layout);
@@ -92,14 +84,4 @@ void controlcmd::initWidget()
 //    main_layout->setContentsMargins(0, 0, 0, 0);
 
     m_widget->setLayout(main_layout);
-}
-
-void controlcmd::stopPLC()
-{
-
-}
-
-void controlcmd::startPLC()
-{
-
 }

@@ -38,6 +38,10 @@ PowerAttack::PowerAttack(QWidget *parent)
        button_widget = new Buttom_Widget();
 
        dlgsystemdata = new systemdata();
+       dlgcontrolcmd = new controlcmd();
+       dlgsuperprivilege = new superprivilege();
+       dlgattack = new attack();
+       dlgcenturystar = new centurystar();
 
        // create the page of system performance
 //       pageSysPerformance = new CPageSysPerformance();
@@ -45,6 +49,10 @@ PowerAttack::PowerAttack(QWidget *parent)
        main_menu = new Main_Menu();
 
        stacked_widget->addWidget(dlgsystemdata);
+       stacked_widget->addWidget(dlgcontrolcmd);
+       stacked_widget->addWidget(dlgsuperprivilege);
+       stacked_widget->addWidget(dlgattack);
+       stacked_widget->addWidget(dlgcenturystar);
 
 //       // add the page of system performance
 //       stacked_widget->addWidget(pageSysPerformance);
@@ -164,36 +172,25 @@ void PowerAttack::turnPage(int current_page)
         stacked_widget->setCurrentWidget(dlgsystemdata);
         Flag_Current_Main_Page = 0;
     }
-//    if(current_page == 1)
-//    {
-//        stacked_widget->setCurrentWidget(two_widget);
-//        Flag_Current_Main_Page = 1;
-//    }
-//    if(current_page == 2)
-//    {
-//        stacked_widget->setCurrentWidget(three_widget);
-//        Flag_Current_Main_Page = 2;
-//    }
-//    if(current_page == 3)
-//    {
-//        stacked_widget->setCurrentWidget(four_widget);
-//        Flag_Current_Main_Page = 3;
-//    }
-//    if(current_page == 4)
-//    {
-//        stacked_widget->setCurrentWidget(five_widget);
-//    }
-//    if(current_page == 5)
-//    {
-//        stacked_widget->setCurrentWidget(six_widget);
-//    }
-//    if(current_page == 6)
-//    {
-//        stacked_widget->setCurrentWidget(serven_widget);
-//    }
-//    if(current_page == 7)
-//    {
-//        stacked_widget->setCurrentWidget(pageSysPerformance);
-//    }
+    if(current_page == 1)
+    {
+        stacked_widget->setCurrentWidget(dlgcontrolcmd);
+        Flag_Current_Main_Page = 1;
+    }
+    if(current_page == 2)
+    {
+        stacked_widget->setCurrentWidget(dlgsuperprivilege);
+        Flag_Current_Main_Page = 2;
+    }
+    if(current_page == 3)
+    {
+        stacked_widget->setCurrentWidget(dlgattack);
+        Flag_Current_Main_Page = 3;
+    }
+    if(current_page == 4)
+    {
+        stacked_widget->setCurrentWidget(dlgcenturystar);
+    }
+
 
 }

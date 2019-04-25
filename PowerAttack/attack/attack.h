@@ -1,5 +1,5 @@
-#ifndef CONTROLCMD_H
-#define CONTROLCMD_H
+#ifndef ATTACK_H
+#define ATTACK_H
 
 #include <QWidget>
 #include <QDialog>
@@ -11,39 +11,29 @@
 #include <QStackedWidget>
 #include <QTextBrowser>
 
-
-class controlcmd : public QWidget
+class attack : public QWidget
 {
     Q_OBJECT
 public:
-    explicit controlcmd(QWidget *parent = nullptr);
+    explicit attack(QWidget *parent = nullptr);
 
-public:
-//    void initItemList();
     void initWidget();
     void appendOutput(QString output);
-
 signals:
 
 public slots:
-    void stopPLC();
-    void startPLC();
 
-
-private:
-
+public:
     QStackedWidget*     m_stackWidget;
     QWidget *           m_widget;
-
-    QLineEdit *         m_inputIp;
-    QLineEdit *         m_inputPort;
 
     // 信息框（测试结果）
     QTextBrowser *      m_textResult;
 
-    QPushButton *       m_buttonStopPLC;
-    QPushButton *       m_buttonStartPLC;
+    QPushButton *       m_buttonSYN;//SYN Flood攻击
+    QPushButton *       m_buttonICMP;//ICMP Flood攻击
+    QPushButton *       m_buttonLAND;//LAND攻击
 
 };
 
-#endif // CONTROLCMD_H
+#endif // ATTACK_H

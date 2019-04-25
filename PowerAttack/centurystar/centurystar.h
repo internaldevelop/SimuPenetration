@@ -1,5 +1,5 @@
-#ifndef CONTROLCMD_H
-#define CONTROLCMD_H
+#ifndef CENTURYSTAR_H
+#define CENTURYSTAR_H
 
 #include <QWidget>
 #include <QDialog>
@@ -11,39 +11,26 @@
 #include <QStackedWidget>
 #include <QTextBrowser>
 
-
-class controlcmd : public QWidget
+class centurystar : public QWidget
 {
     Q_OBJECT
 public:
-    explicit controlcmd(QWidget *parent = nullptr);
+    explicit centurystar(QWidget *parent = nullptr);
 
-public:
-//    void initItemList();
     void initWidget();
     void appendOutput(QString output);
-
 signals:
 
 public slots:
-    void stopPLC();
-    void startPLC();
 
-
-private:
-
+public:
     QStackedWidget*     m_stackWidget;
     QWidget *           m_widget;
-
-    QLineEdit *         m_inputIp;
-    QLineEdit *         m_inputPort;
 
     // 信息框（测试结果）
     QTextBrowser *      m_textResult;
 
-    QPushButton *       m_buttonStopPLC;
-    QPushButton *       m_buttonStartPLC;
-
+    QPushButton *       m_buttonVertical;//纵向提权
 };
 
-#endif // CONTROLCMD_H
+#endif // CENTURYSTAR_H

@@ -1,5 +1,5 @@
-#ifndef CONTROLCMD_H
-#define CONTROLCMD_H
+#ifndef SUPERPRIVILEGE_H
+#define SUPERPRIVILEGE_H
 
 #include <QWidget>
 #include <QDialog>
@@ -10,40 +10,31 @@
 #include <QSplitter>
 #include <QStackedWidget>
 #include <QTextBrowser>
-
-
-class controlcmd : public QWidget
+class superprivilege : public QWidget
 {
     Q_OBJECT
 public:
-    explicit controlcmd(QWidget *parent = nullptr);
+    explicit superprivilege(QWidget *parent = nullptr);
 
-public:
-//    void initItemList();
     void initWidget();
     void appendOutput(QString output);
 
 signals:
 
 public slots:
-    void stopPLC();
-    void startPLC();
 
-
-private:
-
+public:
     QStackedWidget*     m_stackWidget;
     QWidget *           m_widget;
-
-    QLineEdit *         m_inputIp;
-    QLineEdit *         m_inputPort;
 
     // 信息框（测试结果）
     QTextBrowser *      m_textResult;
 
-    QPushButton *       m_buttonStopPLC;
-    QPushButton *       m_buttonStartPLC;
+    QPushButton *       m_buttonVertical;//纵向提权
+    QPushButton *       m_buttonHorizontal;//横向提权
+    QPushButton *       m_buttonOfflineAttack;//离线密码破解
+    QPushButton *       m_buttonOnlineAttack;//在线密码攻击
 
 };
 
-#endif // CONTROLCMD_H
+#endif // SUPERPRIVILEGE_H

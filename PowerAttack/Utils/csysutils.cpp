@@ -77,7 +77,7 @@ QString CSysUtils::execCmd(QString cmd) {
 
     QString errorInfo = proc.readAllStandardError();
     if (!errorInfo.isEmpty())
-        return "";
+        return errorInfo;
 
     QString result = proc.readAllStandardOutput();
     return result.trimmed();

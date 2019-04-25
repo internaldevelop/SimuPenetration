@@ -50,7 +50,10 @@ SOURCES += \
     systemdata/systemdata.cpp \
     controlcmd/controlcmd.cpp \
     net_speed.cpp \
-    c37292.cpp
+    c37292.cpp \
+    superprivilege/superprivilege.cpp \
+    attack/attack.cpp \
+    centurystar/centurystar.cpp
 
 HEADERS += \
     powerattack.h \
@@ -71,7 +74,10 @@ HEADERS += \
     systemdata/systemdata.h \
     controlcmd/controlcmd.h \
     net_speed.h \
-    c37292.h
+    c37292.h \
+    superprivilege/superprivilege.h \
+    attack/attack.h \
+    centurystar/centurystar.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

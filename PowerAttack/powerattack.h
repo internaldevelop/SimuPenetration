@@ -16,6 +16,10 @@
 //#include "Pages/cpagesysperformance.h"
 
 #include "systemdata/systemdata.h"
+#include "controlcmd/controlcmd.h"
+#include "superprivilege/superprivilege.h"
+#include "attack/attack.h"
+#include "centurystar/centurystar.h"
 
 class PowerAttack : public DropShadowWidget
 {
@@ -49,7 +53,11 @@ private:
     void createMenu();
     void showNormal();
 
-    systemdata *dlgsystemdata;
+    systemdata      *dlgsystemdata;
+    controlcmd      *dlgcontrolcmd;
+    superprivilege  *dlgsuperprivilege;
+    attack          *dlgattack;
+    centurystar     *dlgcenturystar;
 
     // ==========================================================
     void  initGlobalVars();
