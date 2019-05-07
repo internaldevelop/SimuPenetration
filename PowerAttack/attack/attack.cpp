@@ -139,6 +139,7 @@ void attack::icmp_flood()
 
 
         QByteArray ba = m_inputIp->text().toLatin1();
+
         picmp->do_main(ba.data());
         m_buttonICMP->setText("停止攻击");
 
