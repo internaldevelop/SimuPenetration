@@ -1,14 +1,7 @@
 #ifndef SYSTEMDATA_H
 #define SYSTEMDATA_H
 
-#include <QDialog>
-#include <QLabel>
-#include <QListWidget>
-#include <QProcess>
-#include <QPushButton>
-#include <QSplitter>
-#include <QStackedWidget>
-#include <QTextBrowser>
+#include "common.h"
 
 class systemdata : public QWidget
 {
@@ -36,25 +29,23 @@ private:
 
     QLineEdit *         m_inputfilename;
 
-
     //篡改
-    QPushButton *m_buttonFalsifyPassword;
+    QPushButton *       m_buttonFalsifyPassword;
     QPushButton *       m_buttonFalsifyFile;
+    QPushButton *       m_buttonOpenFile;
 
-
-
-    // 测试网络性能的widget
-    QWidget *           m_widgetBandWidth;
-    // URL输入框
-    QLineEdit *         m_inputURL;
-    // 测试URL访问的按钮
-    QPushButton *       m_buttonAccessURL;
-    // 测试ping通网址的按钮
-    QPushButton *       m_buttonPingURL;
-    // 测试网卡性能的按钮
-    QPushButton *       m_buttonPerformance;
-    // 网络延时检测的按钮
-    QPushButton *       m_buttonNetworkDelay;
+//    // 测试网络性能的widget
+//    QWidget *           m_widgetBandWidth;
+//    // URL输入框
+//    QLineEdit *         m_inputURL;
+//    // 测试URL访问的按钮
+//    QPushButton *       m_buttonAccessURL;
+//    // 测试ping通网址的按钮
+//    QPushButton *       m_buttonPingURL;
+//    // 测试网卡性能的按钮
+//    QPushButton *       m_buttonPerformance;
+//    // 网络延时检测的按钮
+//    QPushButton *       m_buttonNetworkDelay;
     // 信息框（测试结果）
     QTextBrowser *      m_textResultPWD;
     QTextBrowser *      m_textResultCFG;
@@ -69,9 +60,7 @@ private:
 protected slots:
     void falsifyPassword();
     void falsifyFile();
-    void networkPerformance();
-    void procFinished(int exitCode, QProcess::ExitStatus exitStatus);
-    void networkDelay();
+    void showFileinfo();
 
     void appendOutput(QString output);
     void appendOutputCFG(QString output);

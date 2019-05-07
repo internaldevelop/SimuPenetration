@@ -1,16 +1,5 @@
 #include "controlcmd.h"
-#include <QHBoxLayout>
-#include <QLineEdit>
-#include <QPrinter>
-#include <QProcess>
-#include <qdebug.h>
-#include <QPainter>
-#include <QFile>
-#include <QPdfWriter>
-#include <QDateTime>
 
-#include <Utils/csysutils.h>
-#include <Utils/cwebutils.h>
 #include "c37292.h"
 
 controlcmd::controlcmd(QWidget *parent) : QWidget(parent)
@@ -70,7 +59,7 @@ void controlcmd::initWidget()
     widget_1_H_layout->addWidget(m_inputIp,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
 
     QLabel * labelpwd = new QLabel();
-    labelpwd->setText("请输入端口號：");
+    labelpwd->setText("请输入端口号：");
     widget_1_H_layout->addWidget(labelpwd);//, 0, Qt::AlignLeft);
     widget_1_H_layout->addWidget(m_inputPort,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
 

@@ -2,14 +2,9 @@
 #define ATTACK_H
 
 #include <QWidget>
-#include <QDialog>
-#include <QLabel>
-#include <QListWidget>
-#include <QProcess>
-#include <QPushButton>
-#include <QSplitter>
-#include <QStackedWidget>
-#include <QTextBrowser>
+#include "common.h"
+
+#include "syn_flood.h"
 
 class attack : public QWidget
 {
@@ -19,9 +14,14 @@ public:
 
     void initWidget();
     void appendOutput(QString output);
+
 signals:
 
 public slots:
+
+    void syn_flood();
+    void icmp_flood();
+    void land();
 
 public:
     QStackedWidget*     m_stackWidget;
@@ -33,6 +33,13 @@ public:
     QPushButton *       m_buttonSYN;//SYN Flood攻击
     QPushButton *       m_buttonICMP;//ICMP Flood攻击
     QPushButton *       m_buttonLAND;//LAND攻击
+
+    QLineEdit *         m_inputIp;
+    QLineEdit *         m_inputPort;
+
+    class syn_flood *psyn;
+
+
 
 };
 

@@ -5,6 +5,51 @@
 #define COMMON_H
 
 #include <QString>
+#include <QDialog>
+#include <QLabel>
+#include <QListWidget>
+#include <QProcess>
+#include <QPushButton>
+#include <QSplitter>
+#include <QStackedWidget>
+#include <QTextBrowser>
+#include <QHBoxLayout>
+#include <QLineEdit>
+#include <QPrinter>
+#include <qdebug.h>
+#include <QPainter>
+#include <QFile>
+#include <QPdfWriter>
+#include <QDateTime>
+
+#include <Utils/csysutils.h>
+#include <Utils/cwebutils.h>
+
+#include <stdio.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <string.h>
+#include <netdb.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <time.h>
+#include <arpa/inet.h>
+#include  <pthread.h>
+
+#include <string.h>
+#include <netinet/ip.h>
+#include <netinet/ip_icmp.h>
+#include <netdb.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <time.h>
+
+
 
 #define DEFAULT_SKIN ":/skin/7_big"
 /*保存密码*/

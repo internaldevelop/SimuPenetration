@@ -1,15 +1,7 @@
 #ifndef CENTURYSTAR_H
 #define CENTURYSTAR_H
 
-#include <QWidget>
-#include <QDialog>
-#include <QLabel>
-#include <QListWidget>
-#include <QProcess>
-#include <QPushButton>
-#include <QSplitter>
-#include <QStackedWidget>
-#include <QTextBrowser>
+#include "common.h"
 
 class centurystar : public QWidget
 {

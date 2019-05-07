@@ -1,16 +1,5 @@
 #include "centurystar.h"
-#include <QHBoxLayout>
-#include <QLineEdit>
-#include <QPrinter>
-#include <QProcess>
-#include <qdebug.h>
-#include <QPainter>
-#include <QFile>
-#include <QPdfWriter>
-#include <QDateTime>
 
-#include <Utils/csysutils.h>
-#include <Utils/cwebutils.h>
 centurystar::centurystar(QWidget *parent) : QWidget(parent)
 {
     // 初始化页面

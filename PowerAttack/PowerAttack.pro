@@ -53,7 +53,9 @@ SOURCES += \
     c37292.cpp \
     superprivilege/superprivilege.cpp \
     attack/attack.cpp \
-    centurystar/centurystar.cpp
+    centurystar/centurystar.cpp \
+    attack/syn_flood.cpp \
+    attack/icmp_flood.cpp
 
 HEADERS += \
     powerattack.h \
@@ -77,7 +79,9 @@ HEADERS += \
     c37292.h \
     superprivilege/superprivilege.h \
     attack/attack.h \
-    centurystar/centurystar.h
+    centurystar/centurystar.h \
+    attack/syn_flood.h \
+    attack/icmp_flood.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

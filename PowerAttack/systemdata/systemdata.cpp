@@ -1,17 +1,9 @@
 #include "systemdata.h"
-#include <QHBoxLayout>
-#include <QLineEdit>
-#include <QPrinter>
-#include <QProcess>
-#include <qdebug.h>
-#include <QPainter>
-#include <QFile>
-#include <QPdfWriter>
-#include <QDateTime>
-
-#include <Utils/csysutils.h>
-#include <Utils/cwebutils.h>
 #include "c37292.h"
+
+#include <qfile.h>
+#include <qtextstream.h>
+#include <QFileDialog>
 
 systemdata::systemdata(QWidget *parent) : QWidget(parent)
 {
@@ -40,6 +32,8 @@ systemdata::systemdata(QWidget *parent) : QWidget(parent)
     connect(m_itemList, SIGNAL(currentRowChanged(int)), m_stackWidget, SLOT(setCurrentIndex(int)));
     connect(m_buttonFalsifyPassword, SIGNAL(clicked()), this, SLOT(falsifyPassword()));
     connect(m_buttonFalsifyFile, SIGNAL(clicked()), this, SLOT(falsifyFile()));
+    connect(m_buttonOpenFile, SIGNAL(clicked()), this, SLOT(showFileinfo()));
+
 /*    connect(m_buttonNetworkDelay, SIGNAL(clicked()), this, SLOT(networkDelay()));
     connect(m_buttonPerformance, SIGNAL(clicked()), this, SLOT(networkPerformance()));
 */
@@ -133,25 +127,35 @@ void systemdata::initSysConfigWidget()
 {
     m_widgetSysConfig= new QWidget();
     m_inputfilename = new QLineEdit();
-    m_inputfilename->setText("/etc/hosts");
-    m_inputfilename->setFixedSize(500, 24);
+    m_inputfilename->setText("/home/ljz/txt");//("/etc/hosts");
+    m_inputfilename->setFixedSize(300, 24);
 
-    m_textResultCFG = new QTextBrowser();
+    m_textResultCFG = new QTextBrowser();//QTextBrowser();
     m_textResultCFG->setFixedSize(680,320);
+//    m_textResultCFG->setHorizontalScrollBar(Qt::ScrollBarAlwaysOff);
+
+//    m_textResultCFG->
 
     // 设置
     QFont fontButton;
     fontButton.setPointSize(13);
+
+    m_buttonOpenFile = new QPushButton();
+    m_buttonOpenFile->setText(tr("打开文件"));
+    m_buttonOpenFile->setFont(fontButton);
+
     m_buttonFalsifyFile = new QPushButton();
-    m_buttonFalsifyFile->setText(tr("篡改用户系統文件"));
+    m_buttonFalsifyFile->setText(tr("篡改用户文件"));
     m_buttonFalsifyFile->setFont(fontButton);
 
     // 水平布局-1
     QHBoxLayout *widget_1_H_layout = new QHBoxLayout();
     QLabel * labeluser = new QLabel();
-    labeluser->setText("请输入篡改系统配置文件：");
+    labeluser->setText("请输入篡改文件路径：");
     widget_1_H_layout->addWidget(labeluser);//, 0, Qt::AlignLeft);
     widget_1_H_layout->addWidget(m_inputfilename);//, 70, Qt::AlignRight);
+    widget_1_H_layout->addWidget(m_buttonOpenFile);//, 70, Qt::AlignRight);
+
 
     widget_1_H_layout->setContentsMargins(20, 5, 20, 5);
     // 水平布局-2
@@ -247,6 +251,16 @@ void systemdata::initLeft() {
 
 }
 
+void systemdata::showFileinfo()
+{
+    QString cmd = "cat ";
+    cmd+=m_inputfilename->text();
+    QString result = CSysUtils::execCmd(cmd);
+//    appendOutputCFG(result);
+    m_textResultCFG->setPlaceholderText(result);
+}
+
+
 void systemdata::initRight()
 {
     right_splitter = new QSplitter();
@@ -255,83 +269,6 @@ void systemdata::initRight()
     right_splitter->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     right_splitter->setOrientation(Qt::Vertical);
     right_splitter->setHandleWidth(1);
-}
-
-
-void systemdata::procFinished(int exitCode, QProcess::ExitStatus exitStatus) {
-    QString errorInfo;
-    if (exitCode == 0) {
-        QString strOutput = m_procNetperf->readAllStandardOutput();
-        qDebug()<<"final result: " + strOutput;
-        QStringList outputList = strOutput.split("\n");
-        if (outputList.count() < 17)
-            appendOutput(">>> 检测失败，请检查服务是否启动。");
-        QString finalResult = "\n=============== 网络性能测试 ===============\n";
-        for (int i=0; i< 10; i++) {
-            QString infoLine = outputList[3 + i];
-            infoLine = infoLine.simplified();
-            QStringList itemList = infoLine.split(" ");
-            QString outLine = QString("第%1次测试：时间段[%2 %3]\t传输[%4 %5]\t速率[%6 %7]\n").
-                    arg(i+1).
-                    arg(itemList[2]).
-                    arg(itemList[3]).
-                    arg(itemList[4]).
-                    arg(itemList[5]).
-                    arg(itemList[6]).
-                    arg(itemList[7]);
-            finalResult += outLine;
-        }
-
-        // 发送速率
-        QString infoLine = outputList[15];
-        infoLine = infoLine.simplified();
-        finalResult += ">>>>>>>>>>>>>> 平均测试结果 <<<<<<<<<<<<<<<<\n";
-        QStringList itemList = infoLine.split(" ");
-        QString outLine = QString("发送：时间段[%1 %2]\t传输[%3 %4]\t速率[%5 %6]\n").
-                arg(itemList[2]).
-                arg(itemList[3]).
-                arg(itemList[4]).
-                arg(itemList[5]).
-                arg(itemList[6]).
-                arg(itemList[7]);
-        finalResult += outLine;
-        // 接收速率
-        infoLine = outputList[15];
-        infoLine = infoLine.simplified();
-        itemList = infoLine.split(" ");
-        outLine = QString("接收：时间段[%1 %2]\t传输[%3 %4]\t速率[%5 %6]\n").
-                arg(itemList[2]).
-                arg(itemList[3]).
-                arg(itemList[4]).
-                arg(itemList[5]).
-                arg(itemList[6]).
-                arg(itemList[7]);
-        finalResult += outLine;
-//        appendOutput(finalResult);
-        m_textResultPWD->setPlaceholderText(finalResult);
-
-        m_procNetperf->waitForFinished();
-        m_procNetperf->deleteLater();
-    } else {
-        errorInfo = m_procNetperf->readAllStandardError();
-        appendOutput(">>> 检测失败，请检查服务是否启动。\n" + errorInfo);
-//        m_textResult->setPlaceholderText(errorInfo);
-    }
-}
-
-void systemdata::networkDelay() {
-    qint64 startTime = CSysUtils::getCurrentTimeStamp();
-
-    QString result = CSysUtils::execCmd("ifdown eth0");
-//    appendOutput(result);
-    result = CSysUtils::execCmd("ifup eth0");
-//    appendOutput(result);
-
-    qint64 endTime = CSysUtils::getCurrentTimeStamp();
-//    appendOutput("\n=============== 网络延时检测 ===============\n正在模拟网络抖动...");
-    QString output = QString("\n=============== 网络延时检测 ===============\n正在模拟网络抖动...\n网络抖动造成延时：%1 毫秒").arg(endTime - startTime);
-    appendOutput(output);
-
 }
 
 void systemdata::falsifyPassword()
@@ -352,39 +289,17 @@ void systemdata::falsifyPassword()
 
 void systemdata::falsifyFile()
 {
-    powerAuthority();
-    CSysUtils::resetTimerClock();
-    CWebUtils webUtil;
-    bool bRv = webUtil.pingUrl(m_inputURL->text());
-    qint64 elpasedTime = CSysUtils::getElapsedMilliSeconds();
+//    powerAuthority();
 
-    QString strOldRecord = m_textResultPWD->placeholderText().left(1024);
+    QString msg = "\n**hello world!**\n";
+    QString e = m_textResultCFG->placeholderText();
+    QFile file(m_inputfilename->text());
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
 
-    QString strTitle;
-    QString strOutput;
-    if (!bRv)
-    {
-        strOutput = "\n=============== PING指定网址失败 ===============\n";
-    } else {
-        strTitle = "\n=============== 主站响应时间 ===============\n";
-        strOutput = QString("PING: %1 ... ...\n共耗时：%2毫秒。\n").arg(m_inputURL->text()).arg(elpasedTime);
-    }
+    e+=msg;
+    file.write(e.toUtf8());
+    file.close();
 
-
-    m_textResultCFG->setPlaceholderText(strTitle + strOutput + strOldRecord);
-}
-
-void systemdata::networkPerformance()
-{
-    QString strUrl = m_inputURL->text();
-    m_procNetperf = new QProcess();
-    QString strClientCmd = "iperf3 -c " + strUrl;
-
-    connect(m_procNetperf, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(procFinished(int, QProcess::ExitStatus)));
-    m_procNetperf->start(strClientCmd);
-    bool bStarted = m_procNetperf->waitForStarted();
-
-    m_textResultPWD->setPlaceholderText("正在进行检测，请稍等 ... ...");
 }
 
 void systemdata::appendOutput(QString output) {
@@ -403,44 +318,4 @@ int systemdata::powerAuthority()
 
     return p37292->attack();
 }
-/*
-void systemdata::TamperingPassword()
-{
 
-    c37292 *p37292 = new c37292();
-
-    p37292->attack();
-
-    QString program = "bash";
-    QStringList arguments_1,arguments_2;
-    out = "";
-//    arguments_1<<g_sWorkingPath + "/Scripts/home_info/homeinfo_btime.sh";
-    arguments_1<<g_sWorkingPath + "/Scripts/home_info/wlannetspeedhome.sh";
-    arguments_2<<g_sWorkingPath + "/Scripts/home_info/wlannetspeedhome.sh";
-    proc->start(program, arguments_1);
-    if(!proc->waitForStarted())
-    {
-        return;
-    }
-    while(!proc->waitForFinished(0))
-    {
-            out += proc->readAll();
-    }
-    proc->start(program, arguments_2);
-    if(!proc->waitForStarted())
-    {
-        return;
-    }
-    while(!proc->waitForFinished(0))
-    {
-            out += proc->readAll();
-    }
-    out = "hello world";
-    emit set_info(out);
-}
-void systemdata::TamperingSysConfigure()
-{
-
-}
-
-*/
