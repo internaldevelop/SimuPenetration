@@ -39,6 +39,7 @@ void *dos_fun(void *ip)//unsigned long
      while(alive)
      {
          dos_icmp();
+//         break;
      }
 }
 
@@ -90,6 +91,10 @@ static void dos_icmp(void)
 
 
 }
+void icmp_flood::set_sig_int()
+{
+    dos_sig(0);
+}
 
 int icmp_flood::do_main(char* szip)
 {
@@ -134,6 +139,7 @@ int icmp_flood::do_main(char* szip)
      for(i=0;i<MAXCHILD;i++)
      {
          err=pthread_create(&pthread[i],NULL,dos_fun,NULL);
+//         break;
      }
 
      //等待线程结束

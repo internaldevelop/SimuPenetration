@@ -5,6 +5,7 @@
 #include "common.h"
 
 #include "syn_flood.h"
+#include "icmp_flood.h"
 
 class attack : public QWidget
 {
@@ -38,6 +39,7 @@ public:
     QLineEdit *         m_inputPort;
 
     class syn_flood *psyn;
+    class icmp_flood *picmp;
 
 
 

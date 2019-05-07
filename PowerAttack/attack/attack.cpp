@@ -21,7 +21,7 @@ attack::attack(QWidget *parent) : QWidget(parent)
     connect(m_buttonLAND, SIGNAL(clicked()), this, SLOT(land()));
 
     psyn = new class syn_flood();
-
+    picmp = new class icmp_flood();
     this->setAutoFillBackground(true);
 
 }
@@ -127,7 +127,7 @@ void attack::icmp_flood()
         m_buttonLAND->setEnabled(true);
         m_buttonICMP->setText("ICMP Flood攻击");
 
-//        psyn->sig_int(0);
+        picmp->set_sig_int();
         appendOutput("攻击已停止");
 
     }
@@ -139,7 +139,7 @@ void attack::icmp_flood()
 
 
         QByteArray ba = m_inputIp->text().toLatin1();
-//        psyn->do_main(ba.data(),m_inputPort->text().toInt());
+        picmp->do_main(ba.data());
         m_buttonICMP->setText("停止攻击");
 
     }

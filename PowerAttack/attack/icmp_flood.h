@@ -7,6 +7,7 @@ class icmp_flood
 {
 public:
     icmp_flood();
+    void set_sig_int();
     int do_main(char* szip);
 };
 
