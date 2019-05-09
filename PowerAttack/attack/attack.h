@@ -16,6 +16,11 @@ public:
     void initWidget();
     void appendOutput(QString output);
 
+    unsigned short csum(unsigned short *ptr, int nbytes);
+    void oneland(int socketfd, in_addr_t source, u_int16_t sourcePort,in_addr_t destination, u_int16_t destinationPort);
+    void doland();
+    int dolandex();
+
 signals:
 
 public slots:
