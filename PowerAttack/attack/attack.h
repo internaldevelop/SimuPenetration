@@ -7,6 +7,22 @@
 #include "syn_flood.h"
 #include "icmp_flood.h"
 
+class My_Obj_attack: public QObject
+{
+    Q_OBJECT
+public:
+    explicit My_Obj_attack();
+
+protected:
+    QProcess *proc;
+    QString out;
+    QTimer *timer;
+signals:
+    void send_appendOutput(QString str);
+protected slots:
+    void start_timer();
+};
+
 class attack : public QWidget
 {
     Q_OBJECT
@@ -16,10 +32,9 @@ public:
     void initWidget();
     void appendOutput(QString output);
 
-    unsigned short csum(unsigned short *ptr, int nbytes);
-    void oneland(int socketfd, in_addr_t source, u_int16_t sourcePort,in_addr_t destination, u_int16_t destinationPort);
-    void doland();
-    int dolandex();
+    int doland();
+    My_Obj_attack *My_Obj_attack_object;//netspeed
+    QThread *my_thread;
 
 signals:
 

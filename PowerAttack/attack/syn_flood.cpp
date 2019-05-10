@@ -169,7 +169,7 @@ void *send_synflood(void *addr)//struct sockaddr_in
             perror("sendto()");
             pthread_exit(0);//"fail");
         }
-        //sleep(1);
+        sleep(1);
     }
 }
 

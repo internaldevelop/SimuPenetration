@@ -33,7 +33,7 @@ void controlcmd::initWidget()
     m_textResult->setFixedSize(680,320);
 
     m_inputIp = new QLineEdit();
-    m_inputIp->setText("127.0.0.1");
+    m_inputIp->setText("192.168.1.50");
     m_inputIp->setFixedSize(100, 24);
 
     m_inputPort = new QLineEdit();
