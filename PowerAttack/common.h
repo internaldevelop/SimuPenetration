@@ -72,6 +72,9 @@ extern int Flag_Current_Main_Page;
 extern QString g_sWorkingPath;  // Current running path of this desktop application
 
 //==============================================================
+#define SYNFLOOD    0
+#define ICMPFLOOD   1
+#define LANDATTACK  2
 
 
 #endif // COMMON_H

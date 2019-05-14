@@ -36,11 +36,36 @@ void ExecAttackThread::startSlave()
     //! [1]
     const QMutexLocker locker(&m_mutex);
 
+    psyn = new class syn_flood();
+    picmp = new class icmp_flood();
+
     //! [2]
     if (!isRunning()) {
         m_procShell = new QProcess();
         start();
     }
+}
+
+void ExecAttackThread::stopAttack(int itype)
+{
+    switch(m_type)
+    {
+    case SYNFLOOD:
+        psyn->set_sig_int();
+        emit attackResult("syn attack stop");
+        break;
+    case ICMPFLOOD:
+        emit attackResult("icmp attack stop");
+        picmp->set_sig_int();
+        break;
+    case LANDATTACK:
+        emit attackResult("land attack stop");
+        break;
+    default:
+        break;
+
+    }
+
 }
 
 void ExecAttackThread::run()
@@ -71,16 +96,18 @@ void ExecAttackThread::run()
 //            errorInfo = m_procShell->readAllStandardError();
 //        }
 
+        QByteArray ba = m_ip.toLatin1();
         switch(m_type)
         {
         case SYNFLOOD:
-            emit attackResult("end syn attack");
+            psyn->do_main(ba.data(),m_port.toInt());
+            emit attackResult("syn attack");
             break;
         case ICMPFLOOD:
-            emit attackResult("end icmp attack");
+            emit attackResult("icmp attack");
             break;
         case LANDATTACK:
-            emit attackResult("end land attack");
+            emit attackResult("land attack");
             break;
         default:
             break;

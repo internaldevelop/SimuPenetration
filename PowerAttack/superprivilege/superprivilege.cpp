@@ -116,7 +116,7 @@ void superprivilege::initWidgetHorizontal()
     fontButton.setPointSize(13);
 
     m_buttonShowUser= new QPushButton();
-    m_buttonShowUser->setText(tr("列舉显示所有用户"));
+    m_buttonShowUser->setText(tr("列举显示所有用户"));
     m_buttonShowUser->setFont(fontButton);
 
     m_inputuser = new QLineEdit();

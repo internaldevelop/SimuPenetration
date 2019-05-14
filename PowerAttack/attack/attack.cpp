@@ -14,34 +14,34 @@
 #include <QThread>
 #include <QTimer>
 
-My_Obj_attack::My_Obj_attack()
-{
-    proc = new QProcess();
-    timer = new QTimer();
-    connect(timer, SIGNAL(timeout()), this, SLOT(start_timer()));
-    timer->start(500);
-}
-void My_Obj_attack::start_timer()
-{
-//    if(timer->isActive())
-//        timer->stop();
-    out = "";
-    emit send_appendOutput("out");
-    QString program = "bash";;
-    QStringList arguments;
-    arguments<<g_sWorkingPath + "/Scripts/netinfo/2/netspeed.sh";
-    proc->start(program, arguments);
-    if(!proc->waitForStarted())
-    {
-        return;
-    }
-    while(true == proc->waitForFinished())
-    {
-            out += proc->readAll();
-        emit send_appendOutput(out);
-    }
-//    timer->start(1500);
-}
+//My_Obj_attack::My_Obj_attack()
+//{
+//    proc = new QProcess();
+//    timer = new QTimer();
+//    connect(timer, SIGNAL(timeout()), this, SLOT(start_timer()));
+//    timer->start(500);
+//}
+//void My_Obj_attack::start_timer()
+//{
+////    if(timer->isActive())
+////        timer->stop();
+//    out = "";
+//    emit send_appendOutput("out");
+//    QString program = "bash";;
+//    QStringList arguments;
+//    arguments<<g_sWorkingPath + "/Scripts/netinfo/2/netspeed.sh";
+//    proc->start(program, arguments);
+//    if(!proc->waitForStarted())
+//    {
+//        return;
+//    }
+//    while(true == proc->waitForFinished())
+//    {
+//            out += proc->readAll();
+//        emit send_appendOutput(out);
+//    }
+////    timer->start(1500);
+//}
 
 #pragma pack(1)
 
@@ -178,11 +178,11 @@ attack::attack(QWidget *parent) : QWidget(parent)
     psyn = new class syn_flood();
     picmp = new class icmp_flood();
 
-    My_Obj_attack_object  = new My_Obj_attack();
-    my_thread = new QThread();
-    My_Obj_attack_object->moveToThread(my_thread);
+//    My_Obj_attack_object  = new My_Obj_attack();
+//    my_thread = new QThread();
+//    My_Obj_attack_object->moveToThread(my_thread);
 
-    connect(My_Obj_attack_object, SIGNAL(send_appendOutput(QString)), this, SLOT(appendOutput(QString)));
+//    connect(My_Obj_attack_object, SIGNAL(send_appendOutput(QString)), this, SLOT(appendOutput(QString)));
 
     this->setAutoFillBackground(true);
 
@@ -257,7 +257,8 @@ void attack::syn_flood()
 {
     if(m_buttonSYN->text()=="停止攻击")
     {
-        psyn->set_sig_int();
+//        psyn->set_sig_int();
+        m_attackThread.stopAttack(SYNFLOOD);
 
         m_buttonICMP->setEnabled(true);
         m_buttonLAND->setEnabled(true);
@@ -286,7 +287,8 @@ void attack::icmp_flood()
 {
     if(m_buttonICMP->text()=="停止攻击")
     {
-        picmp->set_sig_int();
+//        picmp->set_sig_int();
+        m_attackThread.stopAttack(ICMPFLOOD);
         appendOutput("攻击已停止");
 
         m_buttonSYN->setEnabled(true);
@@ -329,7 +331,7 @@ void attack::land()
         m_buttonICMP->setEnabled(false);
 
 
-        QByteArray ba = m_inputIp->text().toLatin1();
+//        QByteArray ba = m_inputIp->text().toLatin1();
 //        psyn->do_main(ba.data(),m_inputPort->text().toInt());
         doland();
 //        m_attackThread.execAttack(ba.data(),m_inputPort->text(),"LAND");

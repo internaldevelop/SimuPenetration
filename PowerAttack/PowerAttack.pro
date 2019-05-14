@@ -56,7 +56,8 @@ SOURCES += \
     centurystar/centurystar.cpp \
     attack/syn_flood.cpp \
     attack/icmp_flood.cpp \
-    attack/landattack.cpp
+    attack/landattack.cpp \
+    attack/execattackthread.cpp
 
 HEADERS += \
     powerattack.h \
@@ -83,7 +84,8 @@ HEADERS += \
     centurystar/centurystar.h \
     attack/syn_flood.h \
     attack/icmp_flood.h \
-    attack/landattack.h
+    attack/landattack.h \
+    attack/execattackthread.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

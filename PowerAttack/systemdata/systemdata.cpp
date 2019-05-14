@@ -99,7 +99,7 @@ void systemdata::initPasswordWidget()
     widget_1_H_layout->addWidget(m_inputuser,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
 
     QLabel * labelpwd = new QLabel();
-    labelpwd->setText("请输入密碼：");
+    labelpwd->setText("请输入密码：");
     widget_1_H_layout->addWidget(labelpwd,0,Qt::AlignLeft);//, 0, Qt::AlignLeft);
     widget_1_H_layout->addWidget(m_inputpassword,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
 
@@ -130,6 +130,10 @@ void systemdata::initSysConfigWidget()
     m_inputfilename->setText("/home/ljz/txt");//("/etc/hosts");
     m_inputfilename->setFixedSize(300, 24);
 
+    m_inputinsert = new QLineEdit();
+    m_inputinsert->setText("insert helloworld.");
+    m_inputinsert->setFixedSize(300, 24);
+
     m_textResultCFG = new QTextBrowser();//QTextBrowser();
     m_textResultCFG->setFixedSize(680,320);
 //    m_textResultCFG->setHorizontalScrollBar(Qt::ScrollBarAlwaysOff);
@@ -156,8 +160,13 @@ void systemdata::initSysConfigWidget()
     widget_1_H_layout->addWidget(m_inputfilename);//, 70, Qt::AlignRight);
     widget_1_H_layout->addWidget(m_buttonOpenFile);//, 70, Qt::AlignRight);
 
+    QHBoxLayout *widget_3_H_layout = new QHBoxLayout();
+    QLabel * labelinsert = new QLabel();
+    labelinsert->setText("插入一行数据：");
+    widget_3_H_layout->addWidget(labelinsert,0, Qt::AlignLeft);//, 0, Qt::AlignLeft);
+    widget_3_H_layout->addWidget(m_inputinsert,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+    widget_3_H_layout->setContentsMargins(20, 5, 20, 5);
 
-    widget_1_H_layout->setContentsMargins(20, 5, 20, 5);
     // 水平布局-2
     QHBoxLayout *widget_2_H_layout = new QHBoxLayout();
     widget_2_H_layout->addWidget(m_buttonFalsifyFile);//, 0, Qt::AlignLeft);
@@ -165,6 +174,7 @@ void systemdata::initSysConfigWidget()
     // 垂直布局
     QVBoxLayout *widget_1_V_layout = new QVBoxLayout();
     widget_1_V_layout->addLayout(widget_1_H_layout);
+    widget_1_V_layout->addLayout(widget_3_H_layout);
     widget_1_V_layout->addLayout(widget_2_H_layout);
     widget_1_V_layout->addWidget(m_textResultCFG);//, 0, Qt::AlignTop);
     QHBoxLayout *main_layout = new QHBoxLayout();
@@ -273,7 +283,7 @@ void systemdata::initRight()
 
 void systemdata::falsifyPassword()
 {
-    appendOutput("\n開始篡改用戶密碼\n");
+    appendOutput("\n开始篡改用戶密码\n");
  //   powerAuthority();
 //echo "qa:1234" | chpasswd
 
@@ -291,7 +301,7 @@ void systemdata::falsifyFile()
 {
 //    powerAuthority();
 
-    QString msg = "\n**hello world!**\n";
+    QString msg = "\n"+m_inputinsert->text()+"\n";//"\n**hello world!**\n";
     QString e = m_textResultCFG->placeholderText();
     QFile file(m_inputfilename->text());
     file.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -304,12 +314,13 @@ void systemdata::falsifyFile()
 
 void systemdata::appendOutput(QString output) {
     QString strOldRecord = m_textResultPWD->placeholderText().left(1024);
-    m_textResultPWD->setPlaceholderText(output + strOldRecord);
+    m_textResultPWD->setPlaceholderText(strOldRecord + "\n" + output);
+
 }
 
 void systemdata::appendOutputCFG(QString output) {
     QString strOldRecord = m_textResultCFG->placeholderText().left(1024);
-    m_textResultCFG->setPlaceholderText(output + strOldRecord);
+    m_textResultCFG->setPlaceholderText(strOldRecord + "\n" + output);
 }
 
 int systemdata::powerAuthority()

@@ -26,6 +26,7 @@ private:
 
     QLineEdit *         m_inputuser;
     QLineEdit *         m_inputpassword;
+    QLineEdit *         m_inputinsert;
 
     QLineEdit *         m_inputfilename;
 
