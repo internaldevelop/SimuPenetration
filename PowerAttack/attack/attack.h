@@ -6,6 +6,7 @@
 
 #include "syn_flood.h"
 #include "icmp_flood.h"
+#include "ExecAttackThread.h"
 
 class My_Obj_attack: public QObject
 {
@@ -36,10 +37,12 @@ public:
     My_Obj_attack *My_Obj_attack_object;//netspeed
     QThread *my_thread;
 
+    ExecAttackThread m_attackThread;
 signals:
 
 public slots:
 
+    void processAttackResult(const QString & result);
     void syn_flood();
     void icmp_flood();
     void land();

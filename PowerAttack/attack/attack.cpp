@@ -169,6 +169,12 @@ attack::attack(QWidget *parent) : QWidget(parent)
     connect(m_buttonICMP, SIGNAL(clicked()), this, SLOT(icmp_flood()));
     connect(m_buttonLAND, SIGNAL(clicked()), this, SLOT(land()));
 
+    // 处理执行脚本线程的信号
+    connect(&m_attackThread, &ExecAttackThread::attackResult, this, &attack::processAttackResult);
+
+    // 启动线程
+    m_attackThread.startSlave();
+
     psyn = new class syn_flood();
     picmp = new class icmp_flood();
 
@@ -266,9 +272,11 @@ void attack::syn_flood()
 
         appendOutput("开始攻击");
 
-        QByteArray ba = m_inputIp->text().toLatin1();
-        psyn->do_main(ba.data(),m_inputPort->text().toInt());
 
+
+        QByteArray ba = m_inputIp->text().toLatin1();
+//        psyn->do_main(ba.data(),m_inputPort->text().toInt());
+        m_attackThread.execAttack(ba.data(),m_inputPort->text(),SYNFLOOD);
 
     }
 
@@ -293,7 +301,9 @@ void attack::icmp_flood()
         m_buttonLAND->setEnabled(false);
 
         QByteArray ba = m_inputIp->text().toLatin1();
-        picmp->do_main(ba.data());
+//        picmp->do_main(ba.data());
+        m_attackThread.execAttack(ba.data(),m_inputPort->text(),ICMPFLOOD);
+
     }
 
 }
@@ -322,6 +332,7 @@ void attack::land()
         QByteArray ba = m_inputIp->text().toLatin1();
 //        psyn->do_main(ba.data(),m_inputPort->text().toInt());
         doland();
+//        m_attackThread.execAttack(ba.data(),m_inputPort->text(),"LAND");
 
     }
 
@@ -330,5 +341,50 @@ void attack::land()
 void attack::appendOutput(QString output) {
     QString strOldRecord = m_textResult->placeholderText().left(1024);
     m_textResult->setPlaceholderText(strOldRecord + "\n" + output);
+}
+
+void attack::processAttackResult(const QString & result) {
+
+    appendOutput(result);
+    // 对脚本执行结果用换行符分割
+//    QStringList resultList = result.split("\n");
+
+//    int modelRowCount = m_model->rowCount();
+
+//    float maxRate = 0;
+//    QString record;
+//    QStringList rowData;
+//    for (int i=0; i < modelRowCount; i++) {
+//        rowData.clear();
+//        if (i < resultList.count()) {
+//            // 按顺序取记录
+//            record = resultList[i];
+
+//            // 使用正则表达式提取数据
+//            QRegExp regExp("PID:(.*)RATE:(.*)NAME:(.*)END");
+//            int pos = record.indexOf(regExp);
+//            if (pos < 0)
+//                continue;
+
+//            if (maxRate < regExp.cap(2).toFloat())
+//                maxRate = regExp.cap(2).toFloat();
+
+//            // 设置表格的行数据
+//            rowData<<regExp.cap(1)<<regExp.cap(3)<<regExp.cap(2);
+
+//        } else {
+//            // 取到的数据不够model的行数时，采用空行
+//            rowData<<""<<""<<"";
+//        }
+//        m_model->setRowData(i, rowData);
+
+//    }
+
+//    // 调整横坐标的尺度，使得图形更协调
+//    m_axisX->setRange(0, maxRate * 8 / 7);
+
+//    // 更新图表
+//    m_model->refresh();
+
 }
 
