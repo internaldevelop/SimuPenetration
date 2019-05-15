@@ -37,7 +37,7 @@ void controlcmd::initWidget()
     m_inputIp->setFixedSize(100, 24);
 
     m_inputPort = new QLineEdit();
-    m_inputPort->setText("6666");
+    m_inputPort->setText("44818");
     m_inputPort->setFixedSize(100, 24);
 
     // 设置

@@ -6,7 +6,7 @@ Buttom_Widget::Buttom_Widget(QWidget *parent) :
     QFont ft;
 //    ft.setBold(true);
     bottom_layout = new QHBoxLayout();
-    contract_label = new QLabel("");//电力工控系统攻击模拟工具
+    contract_label = new QLabel("欢迎使用电力工控系统攻击模拟工具");//
     contract_label->setStyleSheet("color:#27408B");
     contract_label->setFont(ft);
     bottom_layout->addWidget(contract_label,0,Qt::AlignCenter);

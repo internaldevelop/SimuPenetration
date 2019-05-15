@@ -66,7 +66,7 @@ PowerAttack::PowerAttack(QWidget *parent)
        main_layout->addWidget(title_widget);
        main_layout->addLayout(stack_layout);
        main_layout->addWidget(button_widget);
-       main_layout->addStretch();
+//       main_layout->addStretch();
        main_layout->setSpacing(0);
        main_layout->setContentsMargins(0,0,0,0);
 

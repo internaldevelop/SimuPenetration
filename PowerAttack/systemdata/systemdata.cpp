@@ -7,6 +7,12 @@
 
 systemdata::systemdata(QWidget *parent) : QWidget(parent)
 {
+//    this->initLeft();
+//    this->initRightTop();
+//    this->initRightCenter();
+//    this->initRightBottom();
+//    this->initRight();
+
     // 初始化左侧功能列表
     initItemList();
 
@@ -34,10 +40,9 @@ systemdata::systemdata(QWidget *parent) : QWidget(parent)
     connect(m_buttonFalsifyFile, SIGNAL(clicked()), this, SLOT(falsifyFile()));
     connect(m_buttonOpenFile, SIGNAL(clicked()), this, SLOT(showFileinfo()));
 
-/*    connect(m_buttonNetworkDelay, SIGNAL(clicked()), this, SLOT(networkDelay()));
-    connect(m_buttonPerformance, SIGNAL(clicked()), this, SLOT(networkPerformance()));
-*/
-//    connect(m_buttonTest, SIGNAL(clicked()), this, SLOT(testExportFiles()));
+//    connect(m_textResultCFG, SIGNAL(cursorPositionChanged()), this, SLOT(autoScroll()));
+//    connect(m_textResultPWD, SIGNAL(cursorPositionChanged()), this, SLOT(autoScroll()));
+
 
     this->setAutoFillBackground(true);
 }
@@ -71,10 +76,10 @@ void systemdata::initPasswordWidget()
     m_widgetPassword = new QWidget();
     m_inputuser = new QLineEdit();
     m_inputpassword = new QLineEdit();
-    m_inputuser->setText("root");
-    m_inputuser->setFixedSize(100, 24);
+    m_inputuser->setText("lvjz");
+    m_inputuser->setFixedSize(200, 24);
     m_inputpassword->setText("123456");
-    m_inputpassword->setFixedSize(100, 24);
+    m_inputpassword->setFixedSize(200, 24);
 
 
 /*    m_inputURL = new QLineEdit();
@@ -128,24 +133,27 @@ void systemdata::initSysConfigWidget()
     m_widgetSysConfig= new QWidget();
     m_inputfilename = new QLineEdit();
     m_inputfilename->setText("/home/ljz/txt");//("/etc/hosts");
-    m_inputfilename->setFixedSize(300, 24);
+    m_inputfilename->setFixedSize(360, 24);
 
     m_inputinsert = new QLineEdit();
     m_inputinsert->setText("insert helloworld.");
-    m_inputinsert->setFixedSize(300, 24);
+    m_inputinsert->setFixedSize(500, 24);
 
     m_textResultCFG = new QTextBrowser();//QTextBrowser();
+//    m_textResultCFG = new QTextEdit();
+
     m_textResultCFG->setFixedSize(680,320);
 //    m_textResultCFG->setHorizontalScrollBar(Qt::ScrollBarAlwaysOff);
 
-//    m_textResultCFG->
+//    m_textResultCFG->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);//设置垂直滚动条不可见
+//    m_textResultCFG->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);//设置水平滚动条不可见
 
     // 设置
     QFont fontButton;
     fontButton.setPointSize(13);
 
     m_buttonOpenFile = new QPushButton();
-    m_buttonOpenFile->setText(tr("打开文件"));
+    m_buttonOpenFile->setText(tr("查看文件内容"));
     m_buttonOpenFile->setFont(fontButton);
 
     m_buttonFalsifyFile = new QPushButton();
@@ -162,9 +170,9 @@ void systemdata::initSysConfigWidget()
 
     QHBoxLayout *widget_3_H_layout = new QHBoxLayout();
     QLabel * labelinsert = new QLabel();
-    labelinsert->setText("插入一行数据：");
-    widget_3_H_layout->addWidget(labelinsert,0, Qt::AlignLeft);//, 0, Qt::AlignLeft);
-    widget_3_H_layout->addWidget(m_inputinsert,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+    labelinsert->setText("输入插入的数据：");
+    widget_3_H_layout->addWidget(labelinsert);//, 0, Qt::AlignLeft);
+    widget_3_H_layout->addWidget(m_inputinsert);//, 70, Qt::AlignRight);
     widget_3_H_layout->setContentsMargins(20, 5, 20, 5);
 
     // 水平布局-2
@@ -184,68 +192,68 @@ void systemdata::initSysConfigWidget()
 
 
 void systemdata::initLeft() {
-    left_widget = new QWidget();
-    label = new QLabel();//图片
-    time_label = new QLabel();
-    sys_test_button = new QPushButton();//检测按钮
-    left_widget->resize(650, 500);
+//    left_widget = new QWidget();
+//    label = new QLabel();//图片
+//    time_label = new QLabel();
+//    sys_test_button = new QPushButton();//检测按钮
+//    left_widget->resize(650, 500);
 
-    QPixmap label_pixmap(":/sys_test_widget/check");
-    label->setPixmap(label_pixmap);
-    label->setFixedSize(label_pixmap.size());
+//    QPixmap label_pixmap(":/sys_test_widget/check");
+//    label->setPixmap(label_pixmap);
+//    label->setFixedSize(label_pixmap.size());
 
-    QFont suggest_font = time_label->font();//返回默认应用程序字体
-    suggest_font.setPointSize(15);//字体大小
-    suggest_font.setBold(true);//加粗
-    time_label->setFont(suggest_font);
-    time_label->setObjectName("grayLabel");
-    time_label->setText(tr("welcome make test"));
+//    QFont suggest_font = time_label->font();//返回默认应用程序字体
+//    suggest_font.setPointSize(15);//字体大小
+//    suggest_font.setBold(true);//加粗
+//    time_label->setFont(suggest_font);
+//    time_label->setObjectName("grayLabel");
+//    time_label->setText(tr("welcome make test"));
 
-    QFont system_safe_font = this->font();
-    system_safe_font.setPointSize(14);
-    system_safe_font.setBold(true);
+//    QFont system_safe_font = this->font();
+//    system_safe_font.setPointSize(14);
+//    system_safe_font.setBold(true);
 
-    QPixmap pixmap(":/sys_test_widget/power");
-    sys_test_button->setIcon(pixmap);
-    sys_test_button->setStyleSheet("border:2px groove gray;border-radius:10px;padding:2px 4px;");
-    sys_test_button->setIconSize(pixmap.size());
-    sys_test_button->setFixedSize(180, 70);
-    sys_test_button->setObjectName("greenButton");
+//    QPixmap pixmap(":/sys_test_widget/power");
+//    sys_test_button->setIcon(pixmap);
+//    sys_test_button->setStyleSheet("border:2px groove gray;border-radius:10px;padding:2px 4px;");
+//    sys_test_button->setIconSize(pixmap.size());
+//    sys_test_button->setFixedSize(180, 70);
+//    sys_test_button->setObjectName("greenButton");
 
-    QFont power_font = sys_test_button->font();
-    power_font.setPointSize(16);
-    sys_test_button->setFont(power_font);
-    sys_test_button->setText(tr("一键测评"));
+//    QFont power_font = sys_test_button->font();
+//    power_font.setPointSize(16);
+//    sys_test_button->setFont(power_font);
+//    sys_test_button->setText(tr("一键测评"));
 
-    QVBoxLayout *v_layout = new QVBoxLayout();//纵向布局
-    v_layout->addWidget(time_label);
-//    v_layout->addWidget(system_safe_label);
-    v_layout->addStretch();//平均分配的意思
-    v_layout->setSpacing(15);//空隙
-    v_layout->setContentsMargins(30, 30, 0, 0);
+//    QVBoxLayout *v_layout = new QVBoxLayout();//纵向布局
+//    v_layout->addWidget(time_label);
+////    v_layout->addWidget(system_safe_label);
+//    v_layout->addStretch();//平均分配的意思
+//    v_layout->setSpacing(15);//空隙
+//    v_layout->setContentsMargins(30, 30, 0, 0);
 
-    QHBoxLayout *h_layout = new QHBoxLayout();//横向布局
-    h_layout->addWidget(label, 0, Qt::AlignTop);//这个枚举类型是用来描述对齐方式的
-    h_layout->addLayout(v_layout);
-    h_layout->addStretch();
-    h_layout->setSpacing(20);
-    h_layout->setContentsMargins(30, 20, 0, 0);
+//    QHBoxLayout *h_layout = new QHBoxLayout();//横向布局
+//    h_layout->addWidget(label, 0, Qt::AlignTop);//这个枚举类型是用来描述对齐方式的
+//    h_layout->addLayout(v_layout);
+//    h_layout->addStretch();
+//    h_layout->setSpacing(20);
+//    h_layout->setContentsMargins(30, 20, 0, 0);
 
-    QVBoxLayout *main_layout = new QVBoxLayout();
-    main_layout->addLayout(h_layout);
-    main_layout->addWidget(sys_test_button, 0, Qt::AlignCenter);
+//    QVBoxLayout *main_layout = new QVBoxLayout();
+//    main_layout->addLayout(h_layout);
+//    main_layout->addWidget(sys_test_button, 0, Qt::AlignCenter);
 
-    main_layout->addStretch();
-    main_layout->setSpacing(0);
-    main_layout->setContentsMargins(0, 0, 0, 0);
+//    main_layout->addStretch();
+//    main_layout->setSpacing(0);
+//    main_layout->setContentsMargins(0, 0, 0, 0);
 
-    left_widget->setLayout(main_layout);
+//    left_widget->setLayout(main_layout);
 
-    this->setAutoFillBackground(true);
-    left_widget->setStyleSheet("QPushButton{color:#030303;background:#63B8FF; border-style: double;\
-                               border-width: 4px;\
-                               border-color: #ffcc00;}");
-    this->setStyleSheet("QTextBrowser{background-color: #eaeaea; border:1px solid grey; border-radius: 8px;}");
+//    this->setAutoFillBackground(true);
+//    left_widget->setStyleSheet("QPushButton{color:#030303;background:#63B8FF; border-style: double;\
+//                               border-width: 4px;\
+//                               border-color: #ffcc00;}");
+//    this->setStyleSheet("QTextBrowser{background-color: #eaeaea; border:1px solid grey; border-radius: 8px;}");
 
  /*
     left_widget->setStyleSheet("QPushButton{image:url(:/skin/0.png); subcontrol-position: right center;\
@@ -273,12 +281,12 @@ void systemdata::showFileinfo()
 
 void systemdata::initRight()
 {
-    right_splitter = new QSplitter();
+//    right_splitter = new QSplitter();
 
-    /* 右分屏的属性设置 */
-    right_splitter->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    right_splitter->setOrientation(Qt::Vertical);
-    right_splitter->setHandleWidth(1);
+//    /* 右分屏的属性设置 */
+//    right_splitter->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+//    right_splitter->setOrientation(Qt::Vertical);
+//    right_splitter->setHandleWidth(1);
 }
 
 void systemdata::falsifyPassword()

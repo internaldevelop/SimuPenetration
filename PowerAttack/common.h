@@ -21,7 +21,7 @@
 #include <QFile>
 #include <QPdfWriter>
 #include <QDateTime>
-
+#include <qplaintextedit.h>
 #include <Utils/csysutils.h>
 #include <Utils/cwebutils.h>
 

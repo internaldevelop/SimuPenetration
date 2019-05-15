@@ -43,11 +43,11 @@ void superprivilege::initItemList(){
     m_itemList = new QListWidget();
 
     // listwidget按钮设置
-    QListWidgetItem *Item_0 = new QListWidgetItem(tr("利用系统漏洞纵向提权"));
+    QListWidgetItem *Item_0 = new QListWidgetItem(tr("纵向提权"));//利用系统漏洞
     Item_0->setIcon(QIcon(":/page_two/cpu1"));
     Item_0->setTextAlignment(Qt::AlignLeft);
     Item_0->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    QListWidgetItem *Item_1 = new QListWidgetItem(tr("利用系统漏洞横向提权"));
+    QListWidgetItem *Item_1 = new QListWidgetItem(tr("横向提权"));
     Item_1->setIcon(QIcon(":/page_two/cpu2"));
     Item_1->setTextAlignment(Qt::AlignLeft);
     Item_1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
