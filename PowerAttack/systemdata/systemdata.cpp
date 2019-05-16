@@ -53,11 +53,11 @@ void systemdata::initItemList(){
 
     // listwidget按钮设置
     QListWidgetItem *Item_0 = new QListWidgetItem(tr("篡改用户密码"));
-    Item_0->setIcon(QIcon(":/page_two/cpu1"));
+    Item_0->setIcon(QIcon(":/page1/pwd"));
     Item_0->setTextAlignment(Qt::AlignLeft);
     Item_0->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     QListWidgetItem *Item_1 = new QListWidgetItem(tr("篡改系统配置文件"));
-    Item_1->setIcon(QIcon(":/page_two/cpu2"));
+    Item_1->setIcon(QIcon(":/page1/file"));
     Item_1->setTextAlignment(Qt::AlignLeft);
     Item_1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
@@ -132,15 +132,15 @@ void systemdata::initSysConfigWidget()
 {
     m_widgetSysConfig= new QWidget();
     m_inputfilename = new QLineEdit();
-    m_inputfilename->setText("/home/ljz/txt");//("/etc/hosts");
+    m_inputfilename->setText("/etc/hosts");//("/home/ljz/txt");
     m_inputfilename->setFixedSize(360, 24);
 
-    m_inputinsert = new QLineEdit();
-    m_inputinsert->setText("insert helloworld.");
-    m_inputinsert->setFixedSize(500, 24);
+//    m_inputinsert = new QLineEdit();
+//    m_inputinsert->setText("insert helloworld.");
+//    m_inputinsert->setFixedSize(500, 24);
 
-    m_textResultCFG = new QTextBrowser();//QTextBrowser();
-//    m_textResultCFG = new QTextEdit();
+//    m_textResultCFG = new QTextBrowser();//QTextBrowser();
+    m_textResultCFG = new QTextEdit();
 
     m_textResultCFG->setFixedSize(680,320);
 //    m_textResultCFG->setHorizontalScrollBar(Qt::ScrollBarAlwaysOff);
@@ -168,12 +168,12 @@ void systemdata::initSysConfigWidget()
     widget_1_H_layout->addWidget(m_inputfilename);//, 70, Qt::AlignRight);
     widget_1_H_layout->addWidget(m_buttonOpenFile);//, 70, Qt::AlignRight);
 
-    QHBoxLayout *widget_3_H_layout = new QHBoxLayout();
-    QLabel * labelinsert = new QLabel();
-    labelinsert->setText("输入插入的数据：");
-    widget_3_H_layout->addWidget(labelinsert);//, 0, Qt::AlignLeft);
-    widget_3_H_layout->addWidget(m_inputinsert);//, 70, Qt::AlignRight);
-    widget_3_H_layout->setContentsMargins(20, 5, 20, 5);
+//    QHBoxLayout *widget_3_H_layout = new QHBoxLayout();
+//    QLabel * labelinsert = new QLabel();
+//    labelinsert->setText("输入插入的数据：");
+//    widget_3_H_layout->addWidget(labelinsert);//, 0, Qt::AlignLeft);
+//    widget_3_H_layout->addWidget(m_inputinsert);//, 70, Qt::AlignRight);
+//    widget_3_H_layout->setContentsMargins(20, 5, 20, 5);
 
     // 水平布局-2
     QHBoxLayout *widget_2_H_layout = new QHBoxLayout();
@@ -182,7 +182,7 @@ void systemdata::initSysConfigWidget()
     // 垂直布局
     QVBoxLayout *widget_1_V_layout = new QVBoxLayout();
     widget_1_V_layout->addLayout(widget_1_H_layout);
-    widget_1_V_layout->addLayout(widget_3_H_layout);
+//    widget_1_V_layout->addLayout(widget_3_H_layout);
     widget_1_V_layout->addLayout(widget_2_H_layout);
     widget_1_V_layout->addWidget(m_textResultCFG);//, 0, Qt::AlignTop);
     QHBoxLayout *main_layout = new QHBoxLayout();
@@ -275,7 +275,8 @@ void systemdata::showFileinfo()
     cmd+=m_inputfilename->text();
     QString result = CSysUtils::execCmd(cmd);
 //    appendOutputCFG(result);
-    m_textResultCFG->setPlaceholderText(result);
+//    m_textResultCFG->setPlaceholderText(result);
+    m_textResultCFG->setPlainText(result);
 }
 
 
@@ -291,7 +292,7 @@ void systemdata::initRight()
 
 void systemdata::falsifyPassword()
 {
-    appendOutput("\n开始篡改用戶密码\n");
+    appendOutput("\n开始篡改用户密码\n");
  //   powerAuthority();
 //echo "qa:1234" | chpasswd
 
@@ -303,20 +304,28 @@ void systemdata::falsifyPassword()
     QString result = CSysUtils::execCmd(cmd);
     appendOutput(result);
 
+    QString msg = "用户:"+m_inputuser->text()+"密码:"+m_inputpassword->text()+"篡改成功.";
+    appendOutput(msg);
+
 }
 
 void systemdata::falsifyFile()
 {
 //    powerAuthority();
 
-    QString msg = "\n"+m_inputinsert->text()+"\n";//"\n**hello world!**\n";
-    QString e = m_textResultCFG->placeholderText();
+//    appendOutputCFG("\n开始篡改用户文件\n");
+//    QString msg = "\n"+m_inputinsert->text()+"\n";//"\n**hello world!**\n";
+//    QString e = m_textResultCFG->placeholderText();
+    QString txt = m_textResultCFG->toPlainText();
+//    QString txt1 = "";
+//    m_textResultCFG->insertPlainText(msg);
     QFile file(m_inputfilename->text());
     file.open(QIODevice::WriteOnly | QIODevice::Text);
 
-    e+=msg;
-    file.write(e.toUtf8());
+//    e+=msg;
+    file.write(txt.toUtf8());
     file.close();
+    appendOutputCFG("\n已成功篡改用户文件.\n");
 
 }
 
@@ -327,8 +336,12 @@ void systemdata::appendOutput(QString output) {
 }
 
 void systemdata::appendOutputCFG(QString output) {
+//    QString strOldRecord = m_textResultCFG->placeholderText().left(1024);
+//    m_textResultCFG->setPlaceholderText(strOldRecord + "\n" + output);
+
     QString strOldRecord = m_textResultCFG->placeholderText().left(1024);
-    m_textResultCFG->setPlaceholderText(strOldRecord + "\n" + output);
+    m_textResultCFG->setPlainText(strOldRecord + "\n" + output);
+
 }
 
 int systemdata::powerAuthority()

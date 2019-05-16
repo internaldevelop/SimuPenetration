@@ -34,6 +34,8 @@ superprivilege::superprivilege(QWidget *parent) : QWidget(parent)
     connect(m_buttonVertical, SIGNAL(clicked()), this, SLOT(verticalPrivilege()));
     connect(m_buttonShowUser, SIGNAL(clicked()), this, SLOT(showAllUser()));
     connect(m_buttonHorizontal, SIGNAL(clicked()), this, SLOT(horizontalPrivilege()));
+    connect(m_buttonOnlineAttack, SIGNAL(clicked()), this, SLOT(onlineAttack()));
+    connect(m_buttonOfflineAttack, SIGNAL(clicked()), this, SLOT(offlineAttack()));
     connect(m_itemList, SIGNAL(currentRowChanged(int)), m_stackWidget, SLOT(setCurrentIndex(int)));
 
     this->setAutoFillBackground(true);
@@ -44,19 +46,19 @@ void superprivilege::initItemList(){
 
     // listwidget按钮设置
     QListWidgetItem *Item_0 = new QListWidgetItem(tr("纵向提权"));//利用系统漏洞
-    Item_0->setIcon(QIcon(":/page_two/cpu1"));
+    Item_0->setIcon(QIcon(":/page_three/vertical"));
     Item_0->setTextAlignment(Qt::AlignLeft);
     Item_0->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     QListWidgetItem *Item_1 = new QListWidgetItem(tr("横向提权"));
-    Item_1->setIcon(QIcon(":/page_two/cpu2"));
+    Item_1->setIcon(QIcon(":/page_three/horizon"));
     Item_1->setTextAlignment(Qt::AlignLeft);
     Item_1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     QListWidgetItem *Item_2 = new QListWidgetItem(tr("离线密码破解"));
-    Item_2->setIcon(QIcon(":/page_two/cpu2"));
+    Item_2->setIcon(QIcon(":/page_three/offline"));
     Item_2->setTextAlignment(Qt::AlignLeft);
     Item_2->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     QListWidgetItem *Item_3 = new QListWidgetItem(tr("在线密码攻击"));
-    Item_3->setIcon(QIcon(":/page_two/cpu2"));
+    Item_3->setIcon(QIcon(":/page_three/online"));
     Item_3->setTextAlignment(Qt::AlignLeft);
     Item_3->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
@@ -75,7 +77,7 @@ void superprivilege::initItemList(){
 void superprivilege::initWidgetVertical()
 {
     m_widgetVertical = new QWidget();
-    m_textResultVertical = new QTextBrowser();
+    m_textResultVertical = new QTextEdit();
     m_textResultVertical->setFixedSize(680,320);
 
     // 设置
@@ -84,10 +86,19 @@ void superprivilege::initWidgetVertical()
     m_buttonVertical= new QPushButton();
     m_buttonVertical->setText(tr("纵向提权"));
     m_buttonVertical->setFont(fontButton);
+    QPixmap pixmap(":/page_three/hacker");
+    m_buttonVertical->setIcon(pixmap);
+    m_buttonVertical->setStyleSheet(
+                                    "QPushButton:hover{background-color:white; color: outset;}"   //鼠标停放时的色彩
+                                    "QPushButton:pressed{background-color:rgb(85, 170, 255);border-style: inset; }"    //鼠标按下的色彩
+                                   );
+    m_buttonVertical->setIconSize(pixmap.size());
+    m_buttonVertical->setFixedSize(180, 70);
+    m_buttonVertical->setObjectName("greenButton");
 
     // 水平布局-1
     QHBoxLayout *widget_1_H_layout = new QHBoxLayout();
-    widget_1_H_layout->addWidget(m_buttonVertical,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+    widget_1_H_layout->addWidget(m_buttonVertical,0,Qt::AlignCenter);//, 70, Qt::AlignRight);
     widget_1_H_layout->setContentsMargins(20, 5, 20, 5);
 
     // 垂直布局
@@ -106,7 +117,7 @@ void superprivilege::initWidgetVertical()
 void superprivilege::initWidgetHorizontal()
 {
     m_widgetHorizontal= new QWidget();
-    m_textResultHorizon = new QTextBrowser();
+    m_textResultHorizon = new QTextEdit();
     m_textResultHorizon->setFixedSize(680,320);
     m_textResultHorizon->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     m_textResultHorizon->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -118,6 +129,15 @@ void superprivilege::initWidgetHorizontal()
     m_buttonShowUser= new QPushButton();
     m_buttonShowUser->setText(tr("列举显示所有用户"));
     m_buttonShowUser->setFont(fontButton);
+    QPixmap pixmapuser(":/page_three/user");
+    m_buttonShowUser->setIcon(pixmapuser);
+    m_buttonShowUser->setStyleSheet(
+                                    "QPushButton:hover{background-color:white; color: outset;}"   //鼠标停放时的色彩
+                                    "QPushButton:pressed{background-color:rgb(85, 170, 255);border-style: inset; }"    //鼠标按下的色彩
+                                   );
+    m_buttonShowUser->setIconSize(pixmapuser.size());
+    m_buttonShowUser->setFixedSize(180, 70);
+    m_buttonShowUser->setObjectName("greenButton");
 
     m_inputuser = new QLineEdit();
 //    m_inputuser->setText("root");
@@ -126,17 +146,26 @@ void superprivilege::initWidgetHorizontal()
     m_buttonHorizontal= new QPushButton();
     m_buttonHorizontal->setText(tr("横向提权"));
     m_buttonHorizontal->setFont(fontButton);
+    QPixmap pixmap(":/page_three/hacker");
+    m_buttonHorizontal->setIcon(pixmap);
+    m_buttonHorizontal->setStyleSheet(
+                                    "QPushButton:hover{background-color:white; color: outset;}"   //鼠标停放时的色彩
+                                    "QPushButton:pressed{background-color:rgb(85, 170, 255);border-style: inset; }"    //鼠标按下的色彩
+                                   );
+    m_buttonHorizontal->setIconSize(pixmap.size());
+    m_buttonHorizontal->setFixedSize(180, 70);
+    m_buttonHorizontal->setObjectName("greenButton");
 
     // 水平布局-1
     QHBoxLayout *widget_1_H_layout = new QHBoxLayout();
 //    widget_1_H_layout->addWidget(m_buttonVertical,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
-    widget_1_H_layout->addWidget(m_buttonShowUser,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+    widget_1_H_layout->addWidget(m_buttonShowUser);//, 70, Qt::AlignRight);
     widget_1_H_layout->setContentsMargins(20, 5, 20, 5);
 
     // 水平布局-2
     QHBoxLayout *widget_2_H_layout = new QHBoxLayout();
     QLabel * labeluser = new QLabel();
-    labeluser->setText("请输入横向提权的用户：");
+    labeluser->setText("请输入提权的用户：");
     widget_2_H_layout->addWidget(labeluser,0,Qt::AlignLeft);//, 0, Qt::AlignLeft);
 
     widget_2_H_layout->addWidget(m_inputuser,0,Qt::AlignLeft);//, 0, Qt::AlignLeft);
@@ -160,7 +189,7 @@ void superprivilege::initWidgetHorizontal()
 void superprivilege::initWidgetOffline()
 {
     m_widgetOffline = new QWidget();
-    m_textResultOffline = new QTextBrowser();
+    m_textResultOffline = new QTextEdit();
     m_textResultOffline->setFixedSize(680,320);
 
     // 设置
@@ -170,6 +199,15 @@ void superprivilege::initWidgetOffline()
     m_buttonOfflineAttack= new QPushButton();
     m_buttonOfflineAttack->setText(tr("离线密码破解"));
     m_buttonOfflineAttack->setFont(fontButton);
+    QPixmap pixmap(":/page_three/hacker");
+    m_buttonOfflineAttack->setIcon(pixmap);
+    m_buttonOfflineAttack->setStyleSheet(
+                                    "QPushButton:hover{background-color:white; color: outset;}"   //鼠标停放时的色彩
+                                    "QPushButton:pressed{background-color:rgb(85, 170, 255);border-style: inset; }"    //鼠标按下的色彩
+                                   );
+    m_buttonOfflineAttack->setIconSize(pixmap.size());
+    m_buttonOfflineAttack->setFixedSize(180, 70);
+    m_buttonOfflineAttack->setObjectName("greenButton");
 
 //    m_buttonOnlineAttack= new QPushButton();
 //    m_buttonOnlineAttack->setText(tr("在线密码攻击"));
@@ -177,7 +215,7 @@ void superprivilege::initWidgetOffline()
 
     // 水平布局-1
     QHBoxLayout *widget_1_H_layout = new QHBoxLayout();
-    widget_1_H_layout->addWidget(m_buttonOfflineAttack,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+    widget_1_H_layout->addWidget(m_buttonOfflineAttack,0,Qt::AlignCenter);//, 70, Qt::AlignRight);
     widget_1_H_layout->setContentsMargins(20, 5, 20, 5);
 
 //    // 水平布局-2
@@ -203,7 +241,7 @@ void superprivilege::initWidgetOffline()
 void superprivilege::initWidgetOnline()
 {
     m_widgetOnline = new QWidget();
-    m_textResultOnline = new QTextBrowser();
+    m_textResultOnline = new QTextEdit();
     m_textResultOnline->setFixedSize(680,320);
 
     // 设置
@@ -224,10 +262,19 @@ void superprivilege::initWidgetOnline()
     m_buttonOnlineAttack= new QPushButton();
     m_buttonOnlineAttack->setText(tr("在线密码攻击"));
     m_buttonOnlineAttack->setFont(fontButton);
+    QPixmap pixmap(":/page_three/hacker");
+    m_buttonOnlineAttack->setIcon(pixmap);
+    m_buttonOnlineAttack->setStyleSheet(
+                                    "QPushButton:hover{background-color:white; color: outset;}"   //鼠标停放时的色彩
+                                    "QPushButton:pressed{background-color:rgb(85, 170, 255);border-style: inset; }"    //鼠标按下的色彩
+                                   );
+    m_buttonOnlineAttack->setIconSize(pixmap.size());
+    m_buttonOnlineAttack->setFixedSize(180, 70);
+    m_buttonOnlineAttack->setObjectName("greenButton");
 
     // 水平布局-1
     QHBoxLayout *widget_1_H_layout = new QHBoxLayout();
-    widget_1_H_layout->addWidget(m_buttonOnlineAttack,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+    widget_1_H_layout->addWidget(m_buttonOnlineAttack,0,Qt::AlignCenter);//, 70, Qt::AlignRight);
 //    widget_1_H_layout->addWidget(m_buttonHorizontal,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
     widget_1_H_layout->setContentsMargins(20, 5, 20, 5);
 
@@ -251,20 +298,22 @@ void superprivilege::initWidgetOnline()
 }
 
 void superprivilege::appendOutputV(QString output) {
-    QString strOldRecord = m_textResultVertical->placeholderText().left(1024);
-    m_textResultVertical->setPlaceholderText(output + strOldRecord);
+    QString strOldRecord = m_textResultVertical->toPlainText().left(1024);
+    m_textResultVertical->setPlainText(output + strOldRecord);
+
+
 }
 void superprivilege::appendOutputH(QString output) {
-    QString strOldRecord = m_textResultHorizon->placeholderText().left(1024);
-    m_textResultHorizon->setPlaceholderText(output + strOldRecord);
+    QString strOldRecord = m_textResultHorizon->toPlainText().left(1024);
+    m_textResultHorizon->setPlainText(output + strOldRecord);
 }
 void superprivilege::appendOutputOff(QString output) {
-    QString strOldRecord = m_textResultOffline->placeholderText().left(1024);
-    m_textResultOffline->setPlaceholderText(output + strOldRecord);
+    QString strOldRecord = m_textResultOffline->toPlainText().left(1024);
+    m_textResultOffline->setPlainText(output + strOldRecord);
 }
 void superprivilege::appendOutputOn(QString output) {
-    QString strOldRecord = m_textResultOnline->placeholderText().left(1024);
-    m_textResultOnline->setPlaceholderText(output + strOldRecord);
+    QString strOldRecord = m_textResultOnline->toPlainText().left(1024);
+    m_textResultOnline->setPlainText(output + strOldRecord);
 }
 
 void superprivilege::verticalPrivilege()
@@ -299,7 +348,22 @@ void superprivilege::horizontalPrivilege()
 
 int superprivilege::powerAuthority()
 {
+    //在目標機上測試執行
     c37292 *p37292 = new c37292();
 
     return p37292->attack();
+}
+
+void superprivilege::onlineAttack()
+{
+
+}
+
+void superprivilege::offlineAttack()
+{
+    appendOutputOff("root:toor:0:0:root:/root:/bin/bash\n");
+    appendOutputOff("crt:crt123:0:1000::/home/crt:/bin/sh\n");
+    appendOutputOff("wyt:toor:1000:1000:,,,:/home/wyt:/bin/bash\n");
+    appendOutputOff("lvjz:1234:1001:1002::/home/lvjz:/bin/sh\n");
+
 }

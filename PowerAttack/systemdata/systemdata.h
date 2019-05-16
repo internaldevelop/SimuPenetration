@@ -49,9 +49,9 @@ private:
 //    QPushButton *       m_buttonNetworkDelay;
     // 信息框（测试结果）
     QTextBrowser *      m_textResultPWD;
-    QTextBrowser *      m_textResultCFG;
+//    QTextBrowser *      m_textResultCFG;
 //    QPlainTextEdit  *      m_textResultCFG;
-//    QTextEdit  *      m_textResultCFG;
+    QTextEdit  *      m_textResultCFG;
     // 测试网络性能的进程
     QProcess *          m_procNetperf;
 

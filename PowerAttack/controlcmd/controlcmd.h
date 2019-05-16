@@ -20,7 +20,6 @@ public slots:
     void stopPLC();
     void startPLC();
 
-
 private:
 
     QStackedWidget*     m_stackWidget;
@@ -30,7 +29,7 @@ private:
     QLineEdit *         m_inputPort;
 
     // 信息框（测试结果）
-    QTextBrowser *      m_textResult;
+    QTextEdit *      m_textResult;
 
     QPushButton *       m_buttonStopPLC;
     QPushButton *       m_buttonStartPLC;

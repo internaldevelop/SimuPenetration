@@ -1,17 +1,17 @@
 <RCC>
     <qresource prefix="/page1">
-        <file>func1.png</file>
-        <file>func2.png</file>
-        <file>func3.png</file>
-        <file>func4.png</file>
-        <file>func5.png</file>
-        <file>func6.png</file>
-        <file>func7.png</file>
-        <file>func8.png</file>
-        <file>logo.png</file>
-        <file>logo1.png</file>
-        <file>score.gif</file>
-        <file>score.png</file>
+        <file>01.jpg</file>
+        <file>02.jpg</file>
+        <file>03.jpg</file>
+        <file>04.jpg</file>
+        <file>05.jpg</file>
+        <file>01.png</file>
+        <file>02.png</file>
+        <file>03.png</file>
+        <file>04.png</file>
+        <file>05.png</file>
+        <file>pwd.png</file>
+        <file>file.png</file>
     </qresource>
     <qresource prefix="/boot">
         <file>img/loading.png</file>
@@ -48,6 +48,8 @@
         <file>power.png</file>
         <file>check.png</file>
         <file>html/index.html</file>
+        <file>start.png</file>
+        <file>stop.png</file>
     </qresource>
     <qresource prefix="/html">
         <file>html/picture/new_1.png</file>
@@ -95,5 +97,13 @@
         <file>security_2.png</file>
         <file>security_3.png</file>
         <file>security_4.png</file>
+    </qresource>
+    <qresource prefix="/page_three">
+        <file>offline.png</file>
+        <file>online.png</file>
+        <file>vertical.png</file>
+        <file>horizon.png</file>
+        <file>hacker.png</file>
+        <file>user.png</file>
     </qresource>
 </RCC>

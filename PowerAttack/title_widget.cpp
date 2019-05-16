@@ -53,8 +53,8 @@ TitleWidget::TitleWidget(QWidget *parent)
     logo_label->setFixedSize(pixmap.size());
 
     QStringList string_list;
-    string_list<<":/page1/func1.png"<<":/page1/func2.png"<<":/page1/func3.png"<<":/page1/func4.png"
-                    <<":/page1/func5.png";
+//    string_list<<":/page1/func1.png"<<":/page1/func2.png"<<":/page1/func3.png"<<":/page1/func4.png"<<":/page1/func5.png";
+    string_list<<":/page1/01.png"<<":/page1/02.png"<<":/page1/03.png"<<":/page1/04.png"<<":/page1/05.png";
 
     QHBoxLayout *button_layout = new QHBoxLayout();
     QSignalMapper *signal_mapper = new QSignalMapper(this);

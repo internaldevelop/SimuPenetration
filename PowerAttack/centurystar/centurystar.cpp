@@ -45,7 +45,7 @@ void centurystar::initWidget()
     QVBoxLayout *widget_1_V_layout = new QVBoxLayout();
     widget_1_V_layout->addLayout(widget_1_H_layout);
     widget_1_V_layout->addLayout(widget_2_H_layout);
-    widget_1_V_layout->addWidget(m_textResult);//, 0, Qt::AlignTop);
+//    widget_1_V_layout->addWidget(m_textResult);//, 0, Qt::AlignTop);
 //    widget_1_V_layout->setContentsMargins(20, 5, 20, 5);
 //    widget_1_V_layout->addStretch();
     QHBoxLayout *main_layout = new QHBoxLayout();

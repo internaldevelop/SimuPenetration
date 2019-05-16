@@ -341,8 +341,8 @@ void attack::land()
 }
 
 void attack::appendOutput(QString output) {
-    QString strOldRecord = m_textResult->placeholderText().left(1024);
-    m_textResult->setPlaceholderText(strOldRecord + "\n" + output);
+    QString strOldRecord = m_textResult->toPlainText().left(1024);
+    m_textResult->setPlainText(strOldRecord + "\n" + output);
 }
 
 void attack::processAttackResult(const QString & result) {

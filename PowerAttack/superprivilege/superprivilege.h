@@ -27,6 +27,8 @@ public slots:
     void appendOutputV(QString output);
     void appendOutputOff(QString output);
     void appendOutputOn(QString output);
+    void offlineAttack();
+    void onlineAttack();
 
 private:
     // 左侧功能列表
@@ -43,10 +45,10 @@ private:
     QWidget *           m_widgetOnline;
 
     // 信息框（测试结果）
-    QTextBrowser *      m_textResultVertical;
-    QTextBrowser *      m_textResultHorizon;
-    QTextBrowser *      m_textResultOffline;
-    QTextBrowser *      m_textResultOnline;
+    QTextEdit *      m_textResultVertical;
+    QTextEdit *      m_textResultHorizon;
+    QTextEdit *      m_textResultOffline;
+    QTextEdit *      m_textResultOnline;
 
     QLineEdit *         m_inputuser;
 
