@@ -76,5 +76,4 @@ extern QString g_sWorkingPath;  // Current running path of this desktop applicat
 #define ICMPFLOOD   1
 #define LANDATTACK  2
 
-
 #endif // COMMON_H

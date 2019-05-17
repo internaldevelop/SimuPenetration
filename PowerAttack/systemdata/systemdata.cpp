@@ -4,6 +4,14 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <QFileDialog>
+#include "common.h"
+
+QString getcurrenttime()
+{
+    QDateTime current_date_time =QDateTime::currentDateTime();
+    QString current_date =current_date_time.toString("yyyy.MM.dd hh:mm:ss.zzz");
+    return current_date;
+}
 
 systemdata::systemdata(QWidget *parent) : QWidget(parent)
 {
@@ -135,18 +143,12 @@ void systemdata::initSysConfigWidget()
     m_inputfilename->setText("/etc/hosts");//("/home/ljz/txt");
     m_inputfilename->setFixedSize(360, 24);
 
-//    m_inputinsert = new QLineEdit();
-//    m_inputinsert->setText("insert helloworld.");
-//    m_inputinsert->setFixedSize(500, 24);
-
-//    m_textResultCFG = new QTextBrowser();//QTextBrowser();
     m_textResultCFG = new QTextEdit();
-
-    m_textResultCFG->setFixedSize(680,320);
-//    m_textResultCFG->setHorizontalScrollBar(Qt::ScrollBarAlwaysOff);
-
-//    m_textResultCFG->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);//设置垂直滚动条不可见
-//    m_textResultCFG->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);//设置水平滚动条不可见
+    m_textResultCFGNew = new QTextEdit();
+    m_textResultCFGLOG = new QTextEdit();
+    m_textResultCFG->setFixedSize(340,300);
+    m_textResultCFGNew->setFixedSize(340,300);
+    m_textResultCFGLOG->setFixedSize(690,80);
 
     // 设置
     QFont fontButton;
@@ -179,12 +181,17 @@ void systemdata::initSysConfigWidget()
     QHBoxLayout *widget_2_H_layout = new QHBoxLayout();
     widget_2_H_layout->addWidget(m_buttonFalsifyFile);//, 0, Qt::AlignLeft);
     widget_2_H_layout->setContentsMargins(20, 5, 20, 5);
+
+    QHBoxLayout *widget_3_H_layout = new QHBoxLayout();
+    widget_3_H_layout->addWidget(m_textResultCFG);//, 70, Qt::AlignRight);
+    widget_3_H_layout->addWidget(m_textResultCFGNew);//, 70, Qt::AlignRight);
+
     // 垂直布局
     QVBoxLayout *widget_1_V_layout = new QVBoxLayout();
     widget_1_V_layout->addLayout(widget_1_H_layout);
-//    widget_1_V_layout->addLayout(widget_3_H_layout);
     widget_1_V_layout->addLayout(widget_2_H_layout);
-    widget_1_V_layout->addWidget(m_textResultCFG);//, 0, Qt::AlignTop);
+    widget_1_V_layout->addLayout(widget_3_H_layout);
+    widget_1_V_layout->addWidget(m_textResultCFGLOG);//, 0, Qt::AlignTop);
     QHBoxLayout *main_layout = new QHBoxLayout();
     main_layout->addLayout(widget_1_V_layout);
     m_widgetSysConfig->setLayout(main_layout);
@@ -277,6 +284,7 @@ void systemdata::showFileinfo()
 //    appendOutputCFG(result);
 //    m_textResultCFG->setPlaceholderText(result);
     m_textResultCFG->setPlainText(result);
+    m_textResultCFGNew->setPlainText(result);
 }
 
 
@@ -292,7 +300,7 @@ void systemdata::initRight()
 
 void systemdata::falsifyPassword()
 {
-    appendOutput("\n开始篡改用户密码\n");
+    appendOutput("开始篡改用户密码");
  //   powerAuthority();
 //echo "qa:1234" | chpasswd
 
@@ -313,34 +321,40 @@ void systemdata::falsifyFile()
 {
 //    powerAuthority();
 
-//    appendOutputCFG("\n开始篡改用户文件\n");
-//    QString msg = "\n"+m_inputinsert->text()+"\n";//"\n**hello world!**\n";
-//    QString e = m_textResultCFG->placeholderText();
     QString txt = m_textResultCFG->toPlainText();
-//    QString txt1 = "";
-//    m_textResultCFG->insertPlainText(msg);
     QFile file(m_inputfilename->text());
     file.open(QIODevice::WriteOnly | QIODevice::Text);
-
-//    e+=msg;
     file.write(txt.toUtf8());
     file.close();
-    appendOutputCFG("\n已成功篡改用户文件.\n");
+
+    appendOutputCFGLOG("\n已成功篡改用户文件.\n");
 
 }
 
+
 void systemdata::appendOutput(QString output) {
-    QString strOldRecord = m_textResultPWD->placeholderText().left(1024);
-    m_textResultPWD->setPlaceholderText(strOldRecord + "\n" + output);
+    output = "["+getcurrenttime()+"]"+output+"\n";
+    QString strOldRecord = m_textResultPWD->toPlainText().left(1024);
+    m_textResultPWD->setPlainText(strOldRecord + "\n" + output);
 
 }
 
 void systemdata::appendOutputCFG(QString output) {
-//    QString strOldRecord = m_textResultCFG->placeholderText().left(1024);
-//    m_textResultCFG->setPlaceholderText(strOldRecord + "\n" + output);
-
-    QString strOldRecord = m_textResultCFG->placeholderText().left(1024);
+    QString strOldRecord = m_textResultCFG->toPlainText().left(1024);
     m_textResultCFG->setPlainText(strOldRecord + "\n" + output);
+}
+
+void systemdata::appendOutputCFGNEW(QString output) {
+    QString strOldRecord = m_textResultCFGNew->toPlainText().left(1024);
+    m_textResultCFGNew->setPlainText(strOldRecord + "\n" + output);
+}
+
+void systemdata::appendOutputCFGLOG(QString output) {
+//    QString strOldRecord = m_textResultCFGLOG->toPlainText().left(1024);
+//    m_textResultCFGLOG->setPlainText(strOldRecord + "\n" + output);
+    output = "["+getcurrenttime()+"]"+output+"\n";
+    QString strOldRecord = m_textResultCFGLOG->toPlainText().left(1024);
+    m_textResultCFGLOG->setPlainText(strOldRecord + "\n" + output);
 
 }
 

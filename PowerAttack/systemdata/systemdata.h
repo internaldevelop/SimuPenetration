@@ -52,6 +52,8 @@ private:
 //    QTextBrowser *      m_textResultCFG;
 //    QPlainTextEdit  *      m_textResultCFG;
     QTextEdit  *      m_textResultCFG;
+    QTextEdit  *      m_textResultCFGNew;
+    QTextEdit  *      m_textResultCFGLOG;
     // 测试网络性能的进程
     QProcess *          m_procNetperf;
 
@@ -67,6 +69,8 @@ protected slots:
 
     void appendOutput(QString output);
     void appendOutputCFG(QString output);
+    void appendOutputCFGNEW(QString output);
+    void appendOutputCFGLOG(QString output);
 
 public:
     int powerAuthority();

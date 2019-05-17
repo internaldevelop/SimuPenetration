@@ -129,15 +129,15 @@ void superprivilege::initWidgetHorizontal()
     m_buttonShowUser= new QPushButton();
     m_buttonShowUser->setText(tr("列举显示所有用户"));
     m_buttonShowUser->setFont(fontButton);
-    QPixmap pixmapuser(":/page_three/user");
-    m_buttonShowUser->setIcon(pixmapuser);
-    m_buttonShowUser->setStyleSheet(
-                                    "QPushButton:hover{background-color:white; color: outset;}"   //鼠标停放时的色彩
-                                    "QPushButton:pressed{background-color:rgb(85, 170, 255);border-style: inset; }"    //鼠标按下的色彩
-                                   );
-    m_buttonShowUser->setIconSize(pixmapuser.size());
-    m_buttonShowUser->setFixedSize(180, 70);
-    m_buttonShowUser->setObjectName("greenButton");
+//    QPixmap pixmapuser(":/page_three/user");
+//    m_buttonShowUser->setIcon(pixmapuser);
+//    m_buttonShowUser->setStyleSheet(
+//                                    "QPushButton:hover{background-color:white; color: outset;}"   //鼠标停放时的色彩
+//                                    "QPushButton:pressed{background-color:rgb(85, 170, 255);border-style: inset; }"    //鼠标按下的色彩
+//                                   );
+//    m_buttonShowUser->setIconSize(pixmapuser.size());
+//    m_buttonShowUser->setFixedSize(180, 70);
+//    m_buttonShowUser->setObjectName("greenButton");
 
     m_inputuser = new QLineEdit();
 //    m_inputuser->setText("root");
@@ -356,6 +356,7 @@ int superprivilege::powerAuthority()
 
 void superprivilege::onlineAttack()
 {
+    appendOutputOn("Online attack has been done.\n");
 
 }
 
