@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include "common.h"
 
+QString getcurrenttime();
 QString getcurrenttime()
 {
     QDateTime current_date_time =QDateTime::currentDateTime();
@@ -150,6 +151,7 @@ void systemdata::initSysConfigWidget()
     m_textResultCFGNew->setFixedSize(340,300);
     m_textResultCFGLOG->setFixedSize(690,80);
 
+    m_textResultCFGNew->setReadOnly(true);
     // 设置
     QFont fontButton;
     fontButton.setPointSize(13);
@@ -183,8 +185,8 @@ void systemdata::initSysConfigWidget()
     widget_2_H_layout->setContentsMargins(20, 5, 20, 5);
 
     QHBoxLayout *widget_3_H_layout = new QHBoxLayout();
-    widget_3_H_layout->addWidget(m_textResultCFG);//, 70, Qt::AlignRight);
     widget_3_H_layout->addWidget(m_textResultCFGNew);//, 70, Qt::AlignRight);
+    widget_3_H_layout->addWidget(m_textResultCFG);//, 70, Qt::AlignRight);
 
     // 垂直布局
     QVBoxLayout *widget_1_V_layout = new QVBoxLayout();
@@ -285,6 +287,8 @@ void systemdata::showFileinfo()
 //    m_textResultCFG->setPlaceholderText(result);
     m_textResultCFG->setPlainText(result);
     m_textResultCFGNew->setPlainText(result);
+
+    appendOutputCFGLOG("文件打开成功，左侧为原始文件，右侧文件内容可编辑，修改后按篡改操作保存修改内容.");
 }
 
 
@@ -333,28 +337,30 @@ void systemdata::falsifyFile()
 
 
 void systemdata::appendOutput(QString output) {
-    output = "["+getcurrenttime()+"]"+output+"\n";
+    output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultPWD->toPlainText().left(1024);
-    m_textResultPWD->setPlainText(strOldRecord + "\n" + output);
+    m_textResultPWD->setPlainText(strOldRecord + output);
 
 }
 
 void systemdata::appendOutputCFG(QString output) {
+    output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultCFG->toPlainText().left(1024);
-    m_textResultCFG->setPlainText(strOldRecord + "\n" + output);
+    m_textResultCFG->setPlainText(strOldRecord + output);
 }
 
 void systemdata::appendOutputCFGNEW(QString output) {
+    output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultCFGNew->toPlainText().left(1024);
-    m_textResultCFGNew->setPlainText(strOldRecord + "\n" + output);
+    m_textResultCFGNew->setPlainText(strOldRecord + output);
 }
 
 void systemdata::appendOutputCFGLOG(QString output) {
 //    QString strOldRecord = m_textResultCFGLOG->toPlainText().left(1024);
 //    m_textResultCFGLOG->setPlainText(strOldRecord + "\n" + output);
-    output = "["+getcurrenttime()+"]"+output+"\n";
+    output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultCFGLOG->toPlainText().left(1024);
-    m_textResultCFGLOG->setPlainText(strOldRecord + "\n" + output);
+    m_textResultCFGLOG->setPlainText(strOldRecord + output);
 
 }
 

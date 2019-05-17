@@ -20,6 +20,7 @@
 #include "superprivilege/superprivilege.h"
 #include "attack/attack.h"
 #include "centurystar/centurystar.h"
+#include "kingview/kingview.h"
 
 class PowerAttack : public DropShadowWidget
 {
@@ -58,6 +59,7 @@ private:
     superprivilege  *dlgsuperprivilege;
     attack          *dlgattack;
     centurystar     *dlgcenturystar;
+    kingview        *dlgkingview;
 
     // ==========================================================
     void  initGlobalVars();

@@ -169,6 +169,8 @@ void *send_synflood(void *addr)//struct sockaddr_in
             perror("sendto()");
             pthread_exit(0);//"fail");
         }
+//        emit attackResult("syn attack...");
+
 //        sleep(1);
     }
 }

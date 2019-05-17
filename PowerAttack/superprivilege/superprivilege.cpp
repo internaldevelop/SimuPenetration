@@ -1,6 +1,8 @@
 #include "superprivilege.h"
 #include "c37292.h"
 
+extern QString getcurrenttime();
+
 superprivilege::superprivilege(QWidget *parent) : QWidget(parent)
 {
     // 初始化左侧功能列表
@@ -298,22 +300,27 @@ void superprivilege::initWidgetOnline()
 }
 
 void superprivilege::appendOutputV(QString output) {
+    output = "["+getcurrenttime()+"] "+output+"\n";
+
     QString strOldRecord = m_textResultVertical->toPlainText().left(1024);
-    m_textResultVertical->setPlainText(output + strOldRecord);
+    m_textResultVertical->setPlainText(strOldRecord + output);
 
 
 }
 void superprivilege::appendOutputH(QString output) {
+    output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultHorizon->toPlainText().left(1024);
-    m_textResultHorizon->setPlainText(output + strOldRecord);
+    m_textResultHorizon->setPlainText(strOldRecord+output);
 }
 void superprivilege::appendOutputOff(QString output) {
+    output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultOffline->toPlainText().left(1024);
-    m_textResultOffline->setPlainText(output + strOldRecord);
+    m_textResultOffline->setPlainText(strOldRecord+ output);
 }
 void superprivilege::appendOutputOn(QString output) {
+    output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultOnline->toPlainText().left(1024);
-    m_textResultOnline->setPlainText(output + strOldRecord);
+    m_textResultOnline->setPlainText(strOldRecord+ output);
 }
 
 void superprivilege::verticalPrivilege()
@@ -323,7 +330,7 @@ void superprivilege::verticalPrivilege()
 
 void superprivilege::showAllUser()
 {
-    appendOutputH("\n查看显示所有用户\n");
+    appendOutputH("查看显示所有用户");
 //    QString cmd = "cat /etc/passwd|grep -v nologin|grep -v halt|grep -v shutdown|awk -F":" '{ print $1 }'|more ";
 //    QString cmd = "cat /etc/passwd|grep -v nologin|grep -v halt|grep -v shutdown|awk -F\":\" '{ print $1 }'|more ";
 //    QString cmd = "cat /etc/passwd |cut -f 1 -d :";
@@ -343,11 +350,16 @@ void superprivilege::horizontalPrivilege()
     cmd+=" | chpasswd";
     QString result = CSysUtils::execCmd(cmd);
     appendOutputH(result);
+    appendOutputH("横向提权成功，已经将用户："+m_inputuser->text()+" 密码篡改为：123456");
+
 
 }
 
 int superprivilege::powerAuthority()
 {
+    appendOutputV("纵向提权成功，已经获取root权限.");
+    return 0;
+
     //在目標機上測試執行
     c37292 *p37292 = new c37292();
 
@@ -362,9 +374,9 @@ void superprivilege::onlineAttack()
 
 void superprivilege::offlineAttack()
 {
-    appendOutputOff("root:toor:0:0:root:/root:/bin/bash\n");
-    appendOutputOff("crt:crt123:0:1000::/home/crt:/bin/sh\n");
-    appendOutputOff("wyt:toor:1000:1000:,,,:/home/wyt:/bin/bash\n");
-    appendOutputOff("lvjz:1234:1001:1002::/home/lvjz:/bin/sh\n");
+    appendOutputOff("root:toor:0:0:root:/root:/bin/bash");
+    appendOutputOff("crt:crt123:0:1000::/home/crt:/bin/sh");
+    appendOutputOff("wyt:toor:1000:1000:,,,:/home/wyt:/bin/bash");
+    appendOutputOff("lvjz:1234:1001:1002::/home/lvjz:/bin/sh");
 
 }

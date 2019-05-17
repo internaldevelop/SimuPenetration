@@ -42,7 +42,7 @@ PowerAttack::PowerAttack(QWidget *parent)
        dlgsuperprivilege = new superprivilege();
        dlgattack = new attack();
        dlgcenturystar = new centurystar();
-
+       dlgkingview = new kingview();
        // create the page of system performance
 //       pageSysPerformance = new CPageSysPerformance();
 
@@ -52,7 +52,8 @@ PowerAttack::PowerAttack(QWidget *parent)
        stacked_widget->addWidget(dlgcontrolcmd);
        stacked_widget->addWidget(dlgsuperprivilege);
        stacked_widget->addWidget(dlgattack);
-       stacked_widget->addWidget(dlgcenturystar);
+//       stacked_widget->addWidget(dlgcenturystar);
+       stacked_widget->addWidget(dlgkingview);
 
 //       // add the page of system performance
 //       stacked_widget->addWidget(pageSysPerformance);
@@ -189,7 +190,8 @@ void PowerAttack::turnPage(int current_page)
     }
     if(current_page == 4)
     {
-        stacked_widget->setCurrentWidget(dlgcenturystar);
+//        stacked_widget->setCurrentWidget(dlgcenturystar);
+        stacked_widget->setCurrentWidget(dlgkingview);
     }
 
 

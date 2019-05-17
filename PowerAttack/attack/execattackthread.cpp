@@ -52,14 +52,14 @@ void ExecAttackThread::stopAttack(int itype)
     {
     case SYNFLOOD:
         psyn->set_sig_int();
-        emit attackResult("syn attack stop");
+        emit attackResult("synflood attack stop.");
         break;
     case ICMPFLOOD:
-        emit attackResult("icmp attack stop");
+        emit attackResult("icmpflood attack stop.");
         picmp->set_sig_int();
         break;
     case LANDATTACK:
-        emit attackResult("land attack stop");
+        emit attackResult("land attack stop.");
         break;
     default:
         break;
@@ -101,20 +101,19 @@ void ExecAttackThread::run()
         {
         case SYNFLOOD:
             psyn->do_main(ba.data(),m_port.toInt());
-            emit attackResult("syn attack");
+            emit attackResult("synflood attack...");
             break;
         case ICMPFLOOD:
-            emit attackResult("icmp attack");
+            emit attackResult("icmpflood attack...");
             break;
         case LANDATTACK:
-            emit attackResult("land attack");
+            emit attackResult("land attack...");
             break;
         default:
             break;
 
         }
 
-        emit attackResult("end attack");
 
         m_bExecShell = false;
 
