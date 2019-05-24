@@ -16,12 +16,11 @@ QT += testlib
 QT += charts
 QT += printsupport
 
-
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += LINUX QT_DEPRECATED_WARNINGS
 
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -526,4 +525,25 @@ DISTFILES += \
     sources/html/index.html \
     sources/index.html \
     sources/logo1.rc \
-    sources/sys_test.ts
+    sources/sys_test.ts \
+    john-1.9.0/run/alnum.chr \
+    john-1.9.0/run/alpha.chr \
+    john-1.9.0/run/ascii.chr \
+    john-1.9.0/run/digits.chr \
+    john-1.9.0/run/lm_ascii.chr \
+    john-1.9.0/run/lower.chr \
+    john-1.9.0/run/lowernum.chr \
+    john-1.9.0/run/lowerspace.chr \
+    john-1.9.0/run/upper.chr \
+    john-1.9.0/run/uppernum.chr \
+    john-1.9.0/run/relbench \
+    john-1.9.0/run/john \
+    john-1.9.0/run/unafs \
+    john-1.9.0/run/unique \
+    john-1.9.0/run/unshadow \
+    john-1.9.0/run/mailer \
+    john-1.9.0/run/makechr \
+    john-1.9.0/run/john.conf \
+    john-1.9.0/run/mypasswd \
+    john-1.9.0/run/password.lst \
+    attackpassword.py

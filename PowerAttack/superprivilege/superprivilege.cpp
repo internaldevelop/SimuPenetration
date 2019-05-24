@@ -314,7 +314,7 @@ void superprivilege::appendOutputH(QString output) {
 }
 void superprivilege::appendOutputOff(QString output) {
     output = "["+getcurrenttime()+"] "+output+"\n";
-    QString strOldRecord = m_textResultOffline->toPlainText().left(1024);
+    QString strOldRecord = m_textResultOffline->toPlainText().left(1024000);
     m_textResultOffline->setPlainText(strOldRecord+ output);
 }
 void superprivilege::appendOutputOn(QString output) {
@@ -374,9 +374,164 @@ void superprivilege::onlineAttack()
 
 void superprivilege::offlineAttack()
 {
-    appendOutputOff("root:toor:0:0:root:/root:/bin/bash");
-    appendOutputOff("crt:crt123:0:1000::/home/crt:/bin/sh");
-    appendOutputOff("wyt:toor:1000:1000:,,,:/home/wyt:/bin/bash");
-    appendOutputOff("lvjz:1234:1001:1002::/home/lvjz:/bin/sh");
+//    appendOutputOff("root:toor:0:0:root:/root:/bin/bash");
+//    appendOutputOff("crt:crt123:0:1000::/home/crt:/bin/sh");
+//    appendOutputOff("wyt:toor:1000:1000:,,,:/home/wyt:/bin/bash");
+//    appendOutputOff("lvjz:1234:1001:1002::/home/lvjz:/bin/sh");
+
+
+    appendOutputOff("开始离线密码破解...");
+//    offlineAttackPython();
+    offlineAttackJohn();
+    return;
+
+//    QProcess p(0);
+//    p.start("python3 ./attackpassword.py");
+//    p.waitForStarted();
+//    p.waitForFinished();
+//    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+//    appendOutputOff(strTemp);
+
+    QProcess p(0);
+    QString cmd = "john mypasswd"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
+
+    QStringList paramsList;
+//    paramsList.append("/etc/passwd /etc/shadow > mypasswd");
+
+//    paramsList.append("/etc/passwd");
+//    paramsList.append("/etc/shadow");
+//    paramsList.append(">");
+//    paramsList.append("mypasswd111");//etc/shadow > mypasswd
+//    p.start(cmd,paramsList);
+    p.start(cmd);
+    p.waitForStarted();
+    p.waitForFinished();
+    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+    appendOutputOff(strTemp);
+
+
+    cmd = "john --show mypasswd"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
+
+    p.start(cmd);
+    p.waitForStarted();
+    p.waitForFinished();
+    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+    appendOutputOff(strTemp);
+
+
+    /*
+    QProcess p(0);
+//    p.start("unshadow", QStringList()<<"/etc/passwd /etc/shadow > mypasswd1");
+    p.start("pwd");
+    p.waitForStarted();
+    p.waitForFinished();
+    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+    appendOutputOff(strTemp);
+
+    p.start("ls", QStringList()<<"-l");
+    p.waitForStarted();
+    p.waitForFinished();
+    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+    appendOutputOff(strTemp);
+
+//    QMessageBox testMassage;
+//    testMassage.setText(strTemp);
+//    testMassage.exec();
+
+    QProcess proc;
+
+    //! top命令获取系统监控信息
+    // 查询系统监控信息，只获取一次
+    QString cmd = "unshadow"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
+    QStringList paramsList;
+    paramsList.append("/etc/passwd /etc/shadow > mypasswd");
+//    paramsList.append("/etc/passwd");
+//    paramsList.append("/etc/shadow");
+//    paramsList.append(">");
+//    paramsList.append("mypasswd111");//etc/shadow > mypasswd
+    //paramsList << "-b" << "-o" << "%CPU" << "-n" << "1";
+//    paramsList << " /etc/passwd"<<" /etc/shadow "<< "> mypasswd";
+//    paramsList << "/etc/passwd" << "/etc/shadow" << ">" << "mypasswd";
+
+    // 启动命令
+//    QString cmd = "unshadow /etc/passwd /etc/shadow > mypasswd";
+//    proc.start(cmd, paramsList);
+    proc.start(cmd);
+
+    // 读取命令返回结果
+    proc.waitForFinished();
+    QString usageInfo = proc.readAllStandardOutput();
+    appendOutputOff(usageInfo);
+    QString errorInfo = proc.readAllStandardError();
+    if (!errorInfo.isEmpty())
+        return;
+    appendOutputOff(errorInfo);
+/*
+    return;
+
+    QString cmd0 = "unshadow /etc/passwd /etc/shadow > mypasswd";
+    QString result = CSysUtils::execCmd(cmd0);
+    appendOutputOff(result);
+
+    QString cmd1 = "john mypasswd";
+    QString result1 = CSysUtils::execCmd(cmd1);
+    appendOutputOff(result1);
+
+    QString cmd2 = "john --show mypasswd";
+    QString result2 = CSysUtils::execCmd(cmd2);
+    appendOutputOff(result2);
+
+//    cmd = "john mypasswd";
+//    result = CSysUtils::execCmd(cmd);
+//    appendOutputOff(result);
+
+//    cmd = "john --show mypasswd";
+//    result = CSysUtils::execCmd(cmd);
+//    appendOutputOff(result);
+*/
+
+}
+
+void superprivilege::offlineAttackPython()
+{
+    QProcess p(0);
+    p.start("python3 ./attackpassword.py");
+    p.waitForStarted();
+    p.waitForFinished();
+    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+    appendOutputOff(strTemp);
+}
+
+void superprivilege::offlineAttackJohn()
+{
+    QProcess p(0);
+
+    QString cmd = "unshadow /etc/passwd /etc/shadow"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
+    p.start(cmd);
+    p.waitForStarted();
+    p.waitForFinished();
+    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+//    QString txt = m_textResultCFG->toPlainText();
+    QFile file("mypasswd");
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    file.write(strTemp.toUtf8());
+    file.close();
+
+    appendOutputOff(strTemp);
+
+    cmd = "john mypasswd"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
+    p.start(cmd);
+    p.waitForStarted();
+    p.waitForFinished();
+    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+    appendOutputOff(strTemp);
+
+    cmd = "john --show mypasswd"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
+
+    p.start(cmd);
+    p.waitForStarted();
+    p.waitForFinished();
+    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+    appendOutputOff(strTemp);
 
 }

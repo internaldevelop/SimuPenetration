@@ -29,6 +29,8 @@ public slots:
     void appendOutputOn(QString output);
     void offlineAttack();
     void onlineAttack();
+    void offlineAttackPython();
+    void offlineAttackJohn();
 
 private:
     // 左侧功能列表

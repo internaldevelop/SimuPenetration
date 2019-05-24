@@ -308,13 +308,25 @@ void systemdata::falsifyPassword()
  //   powerAuthority();
 //echo "qa:1234" | chpasswd
 
-    QString cmd = "echo ";
-    cmd+=m_inputuser->text();
-    cmd+=+":";
-    cmd+=m_inputpassword->text();
-    cmd+=" | chpasswd";
-    QString result = CSysUtils::execCmd(cmd);
-    appendOutput(result);
+//    QString cmd = "echo ";
+//    cmd+=m_inputuser->text();
+//    cmd+=+":";
+//    cmd+=m_inputpassword->text();
+//    cmd+=" | chpasswd";
+//    QString result = CSysUtils::execCmd(cmd);
+//    appendOutput(result);
+
+    QProcess proc;
+    QString cmd = "echo";
+    QStringList paramsList;
+    paramsList.append(m_inputuser->text()+":"+m_inputpassword->text()+"| chpasswd");
+//    paramsList.append("| chpasswd");
+    proc.start(cmd,paramsList);
+
+    // 读取命令返回结果
+    proc.waitForFinished();
+    QString usageInfo = proc.readAllStandardOutput();
+    appendOutput(usageInfo);
 
     QString msg = "用户:"+m_inputuser->text()+"密码:"+m_inputpassword->text()+"篡改成功.";
     appendOutput(msg);
