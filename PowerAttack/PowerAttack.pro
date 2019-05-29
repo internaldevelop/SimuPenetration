@@ -57,7 +57,9 @@ SOURCES += \
     attack/icmp_flood.cpp \
     attack/landattack.cpp \
     attack/execattackthread.cpp \
-    kingview/kingview.cpp
+    kingview/kingview.cpp \
+    controlcmd/plclogolib.cpp \
+    controlcmd/plcqtlib.cpp
 
 HEADERS += \
     powerattack.h \
@@ -86,7 +88,10 @@ HEADERS += \
     attack/icmp_flood.h \
     attack/landattack.h \
     attack/execattackthread.h \
-    kingview/kingview.h
+    kingview/kingview.h \
+    controlcmd/plclogolib.h \
+    controlcmd/plcqtlib.h \
+    controlcmd/plcqtlib_global.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

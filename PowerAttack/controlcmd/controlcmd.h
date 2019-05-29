@@ -2,6 +2,7 @@
 #define CONTROLCMD_H
 
 #include "common.h"
+#include "plcqtlib.h"
 
 class controlcmd : public QWidget
 {
@@ -19,6 +20,7 @@ signals:
 public slots:
     void stopPLC();
     void startPLC();
+    void ConnectPlc();
 
 private:
 
@@ -33,6 +35,11 @@ private:
 
     QPushButton *       m_buttonStopPLC;
     QPushButton *       m_buttonStartPLC;
+
+    int port,statotcp,mpi,rack,slot;
+    bool stato;
+    bool plcok;
+    Plcqtlib *conplc;
 
 };
 

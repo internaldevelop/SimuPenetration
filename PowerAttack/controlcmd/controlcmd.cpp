@@ -2,6 +2,7 @@
 
 #include "c37292.h"
 
+
 extern QString getcurrenttime();
 
 controlcmd::controlcmd(QWidget *parent) : QWidget(parent)
@@ -21,6 +22,9 @@ controlcmd::controlcmd(QWidget *parent) : QWidget(parent)
     main_layout->setContentsMargins(0,0,0,0);
     setLayout(main_layout);
 
+    plcok = false;
+    conplc = new Plcqtlib();
+
     connect(m_buttonStopPLC, SIGNAL(clicked()), this, SLOT(stopPLC()));
     connect(m_buttonStartPLC, SIGNAL(clicked()), this, SLOT(startPLC()));
 
@@ -35,11 +39,11 @@ void controlcmd::initWidget()
     m_textResult->setFixedSize(680,320);
 
     m_inputIp = new QLineEdit();
-    m_inputIp->setText("192.168.1.50");
+    m_inputIp->setText("192.168.20.101");//192.168.1.50");
     m_inputIp->setFixedSize(100, 24);
 
     m_inputPort = new QLineEdit();
-    m_inputPort->setText("44818");
+    m_inputPort->setText("102");//44818");
     m_inputPort->setFixedSize(100, 24);
 
     // 设置
@@ -122,6 +126,20 @@ void controlcmd::stopPLC()
     appendOutput("776d736762000021000025000010000c000000000000000100000000776d736765");
     appendOutput("PLC关闭成功.");
 
+    int iret=0;
+
+    ConnectPlc();
+
+    if(plcok == true){
+        iret = conplc->stopPlc();
+        appendOutput(QString::number(iret));
+
+    }else
+    {
+        appendOutput("");
+        plcok = false;
+    }
+
 }
 
 void controlcmd::startPLC()
@@ -129,6 +147,71 @@ void controlcmd::startPLC()
     appendOutput("正在进行PLC通讯，发送开启指令：");
     appendOutput("776d736762000021000025000010000c000000000000000000000000776d736765");
     appendOutput("PLC 开启指令成功.");
+
+    int iret=0;
+
+    ConnectPlc();
+
+    if(plcok == true){
+        iret = conplc->runPlc();
+        appendOutput(QString::number(iret));
+
+    }else
+    {
+        appendOutput("");
+        plcok = false;
+    }
+
+
+}
+
+void controlcmd::ConnectPlc()
+{
+    if(plcok)
+        return;
+//    int port,statotcp,mpi,rack,slot;
+//    bool stato;
+//    bool plcok;
+//    int value;
+
+    //S71200
+    mpi = 2;
+    rack = 1;
+    slot = 0;
+
+    //S7300
+    mpi = 2;
+    rack = 0;
+    slot = 2;
+
+    statotcp = conplc->setTcp(m_inputIp->text(),102);//"192.168.20.101"
+    int statoplc = conplc->setPlc("S7300",mpi,rack,slot);
+    if ((statotcp == 0) & (statoplc == 0) ){
+        stato = true;
+        plcok = true;
+//        emit NetPlcStato(stato);
+
+        QString adr;
+        //adr=conplc->getAddress();
+//        ui->ListIp->addItem(adr);
+        int port;
+        port=conplc->getPort();
+        adr = adr.setNum(port);
+//        ui->ListIp->addItem(adr);
+        int sock;
+        sock=conplc->getSocketDescriptor();
+        adr = adr.setNum(sock);
+//        ui->ListIp->addItem(adr);
+        adr=conplc->getError();
+//        ui->ListIp->addItem(adr);
+        adr = adr.setNum(statoplc);
+//        ui->ListIp->addItem(adr);
+
+
+    }else {
+        stato = false;
+//        this->Mess();
+    }
 
 }
 
