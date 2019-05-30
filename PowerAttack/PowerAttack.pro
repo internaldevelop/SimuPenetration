@@ -12,15 +12,16 @@ TARGET = PowerAttack
 TEMPLATE = app
 
 QT += widgets network
-QT += testlib
-QT += charts
-QT += printsupport
+#QT += testlib
+
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += LINUX QT_DEPRECATED_WARNINGS
+DEFINES += DAVE_LITTLE_ENDIAN
+LIBS    += -lplcqtlib
 
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -58,8 +59,7 @@ SOURCES += \
     attack/landattack.cpp \
     attack/execattackthread.cpp \
     kingview/kingview.cpp \
-    controlcmd/plclogolib.cpp \
-    controlcmd/plcqtlib.cpp
+    gen.cpp
 
 HEADERS += \
     powerattack.h \
@@ -89,9 +89,7 @@ HEADERS += \
     attack/landattack.h \
     attack/execattackthread.h \
     kingview/kingview.h \
-    controlcmd/plclogolib.h \
-    controlcmd/plcqtlib.h \
-    controlcmd/plcqtlib_global.h
+    gen.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -552,3 +550,10 @@ DISTFILES += \
     john-1.9.0/run/mypasswd \
     john-1.9.0/run/password.lst \
     attackpassword.py
+
+#LIBS += -L$$PWD/../../libnodave-0.8.5 -lnodave
+
+#unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lnodave
+
+#INCLUDEPATH += $$PWD/../../../../../usr/local/include
+#DEPENDPATH += $$PWD/../../../../../usr/local/include

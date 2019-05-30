@@ -15,7 +15,7 @@
 #include <QTextBrowser>
 #include <QHBoxLayout>
 #include <QLineEdit>
-#include <QPrinter>
+//#include <QPrinter>
 #include <qdebug.h>
 #include <QPainter>
 #include <QFile>
@@ -48,7 +48,6 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <time.h>
-
 
 
 #define DEFAULT_SKIN ":/skin/7_big"

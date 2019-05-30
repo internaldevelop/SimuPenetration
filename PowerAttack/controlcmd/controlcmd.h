@@ -1,7 +1,15 @@
 #ifndef CONTROLCMD_H
 #define CONTROLCMD_H
 
-#include "common.h"
+//#include "common.h"
+#include <QStackedWidget>
+#include <QTextBrowser>
+#include <QHBoxLayout>
+#include <QLineEdit>
+#include <QWidget>
+#include <QLabel>
+#include <QPushButton>
+
 #include "plcqtlib.h"
 
 class controlcmd : public QWidget

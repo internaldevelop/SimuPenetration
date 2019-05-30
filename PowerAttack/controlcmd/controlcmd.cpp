@@ -169,10 +169,6 @@ void controlcmd::ConnectPlc()
 {
     if(plcok)
         return;
-//    int port,statotcp,mpi,rack,slot;
-//    bool stato;
-//    bool plcok;
-//    int value;
 
     //S71200
     mpi = 2;
@@ -189,30 +185,30 @@ void controlcmd::ConnectPlc()
     if ((statotcp == 0) & (statoplc == 0) ){
         stato = true;
         plcok = true;
-//        emit NetPlcStato(stato);
+        //        emit NetPlcStato(stato);
 
         QString adr;
         //adr=conplc->getAddress();
-//        ui->ListIp->addItem(adr);
+        //        ui->ListIp->addItem(adr);
         int port;
         port=conplc->getPort();
         adr = adr.setNum(port);
-//        ui->ListIp->addItem(adr);
+        //        ui->ListIp->addItem(adr);
         int sock;
         sock=conplc->getSocketDescriptor();
         adr = adr.setNum(sock);
-//        ui->ListIp->addItem(adr);
+        //        ui->ListIp->addItem(adr);
         adr=conplc->getError();
-//        ui->ListIp->addItem(adr);
+        //        ui->ListIp->addItem(adr);
         adr = adr.setNum(statoplc);
-//        ui->ListIp->addItem(adr);
+        //        ui->ListIp->addItem(adr);
 
 
     }else {
         stato = false;
-//        this->Mess();
+        //        this->Mess();
     }
-
+/**/
 }
 
 void controlcmd::appendOutput(QString output)
