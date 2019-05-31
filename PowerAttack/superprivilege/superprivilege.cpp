@@ -274,10 +274,29 @@ void superprivilege::initWidgetOnline()
     m_buttonOnlineAttack->setFixedSize(180, 70);
     m_buttonOnlineAttack->setObjectName("greenButton");
 
+    QLabel * labelip = new QLabel();
+    labelip->setText("请输入在线攻击地址:");
+
+    QLabel * labelmode = new QLabel();
+    labelmode->setText("攻击方式:");
+
+    m_ip = new QLineEdit();
+    m_ip->setText("127.0.0.1");
+    m_ip->setFixedSize(150, 24);
+
+    m_comboBox =new QComboBox();
+    QStringList strList;
+    strList<<"ssh"<<"ftp"<<"telnet";
+    m_comboBox->addItems(strList);
+
     // 水平布局-1
     QHBoxLayout *widget_1_H_layout = new QHBoxLayout();
+
+    widget_1_H_layout->addWidget(labelip,0,Qt::AlignLeft);
+    widget_1_H_layout->addWidget(m_ip,0,Qt::AlignLeft);
+    widget_1_H_layout->addWidget(labelmode,0,Qt::AlignLeft);
+    widget_1_H_layout->addWidget(m_comboBox,0,Qt::AlignLeft);
     widget_1_H_layout->addWidget(m_buttonOnlineAttack,0,Qt::AlignCenter);//, 70, Qt::AlignRight);
-//    widget_1_H_layout->addWidget(m_buttonHorizontal,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
     widget_1_H_layout->setContentsMargins(20, 5, 20, 5);
 
 //    // 水平布局-2
@@ -369,6 +388,30 @@ int superprivilege::powerAuthority()
 void superprivilege::onlineAttack()
 {
     appendOutputOn("Online attack has been done.\n");
+
+    QProcess p(0);
+
+//    QString cmd = "hydra -L user.txt -P password.txt -t 6 -vV -e ns -o save.log 127.0.0.1 ssh";
+    QString cmd = "rm -rf save.log";
+    p.start(cmd);
+    p.waitForStarted();
+    p.waitForFinished();
+    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+    appendOutputOn(strTemp);
+
+    cmd = "hydra -L user.txt -P password.txt -t 6 -vV -e ns -o save.log "+m_ip->text() + " " + m_comboBox->currentText();
+    p.start(cmd);
+    p.waitForStarted();
+    p.waitForFinished();
+    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+    appendOutputOn(strTemp);
+
+    cmd = "cat save.log";
+    p.start(cmd);
+    p.waitForStarted();
+    p.waitForFinished();
+    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+    appendOutputOn(strTemp);
 
 }
 

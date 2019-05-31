@@ -54,6 +54,11 @@ private:
 
     QLineEdit *         m_inputuser;
 
+    QLineEdit *         m_ip;
+    QComboBox *         m_comboBox;
+
+
+
     QPushButton *       m_buttonShowUser;//查看显示所有用户
     QPushButton *       m_buttonVertical;//纵向提权
     QPushButton *       m_buttonHorizontal;//横向提权

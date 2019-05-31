@@ -15,6 +15,7 @@
 #include <QTextBrowser>
 #include <QHBoxLayout>
 #include <QLineEdit>
+#include <QComboBox>
 //#include <QPrinter>
 #include <qdebug.h>
 #include <QPainter>

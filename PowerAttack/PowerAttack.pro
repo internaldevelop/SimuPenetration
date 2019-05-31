@@ -58,8 +58,7 @@ SOURCES += \
     attack/icmp_flood.cpp \
     attack/landattack.cpp \
     attack/execattackthread.cpp \
-    kingview/kingview.cpp \
-    gen.cpp
+    kingview/kingview.cpp
 
 HEADERS += \
     powerattack.h \
@@ -88,8 +87,7 @@ HEADERS += \
     attack/icmp_flood.h \
     attack/landattack.h \
     attack/execattackthread.h \
-    kingview/kingview.h \
-    gen.h
+    kingview/kingview.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
