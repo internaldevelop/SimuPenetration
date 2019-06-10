@@ -13,7 +13,7 @@ public:
     void initItemList();
     void initPasswordWidget();
     void initSysConfigWidget();
-
+    QString runcmd(QString command);
 private:
     // 左侧功能列表
     QListWidget *       m_itemList;

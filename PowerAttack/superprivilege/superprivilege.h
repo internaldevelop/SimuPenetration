@@ -17,6 +17,8 @@ public:
     void appendOutput(QString output);
     int powerAuthority();
 
+    QString runcmd(QString command);
+
 signals:
 
 public slots:

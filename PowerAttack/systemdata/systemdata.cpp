@@ -302,8 +302,20 @@ void systemdata::initRight()
 //    right_splitter->setHandleWidth(1);
 }
 
+QString systemdata::runcmd(QString command)
+{
+    QProcess p(0);
+    p.start(command);
+    p.waitForStarted();
+    p.waitForFinished();
+    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+    return strTemp;
+}
+
 void systemdata::falsifyPassword()
 {
+    appendOutput("current user:");
+    appendOutput(runcmd("whoami"));
     appendOutput("开始篡改用户密码");
  //   powerAuthority();
 //echo "qa:1234" | chpasswd
@@ -334,11 +346,26 @@ void systemdata::falsifyPassword()
     cmd+=m_inputpassword->text();
     cmd+=" | chpasswd";
     QByteArray ba = cmd.toLatin1(); // must
-    QString result = "";
-    system(ba.data());
-    appendOutput(result);
 
-    QString msg = "用户:"+m_inputuser->text()+"密码:"+m_inputpassword->text()+"篡改成功.";
+    FILE *pf;
+    char buffer[4096];
+    pf = popen(ba.data(), "r");
+    fread(buffer, sizeof(buffer), 1, pf);
+    printf("%s\n", buffer);
+    appendOutput(buffer);
+    pclose(pf);
+
+    int iret = system(ba.data());
+    QString msg="";
+    if(iret==0)
+    {
+        msg = "用户:"+m_inputuser->text()+"密码:"+m_inputpassword->text()+"篡改成功.";
+    }
+    else
+    {
+        msg = "用户:"+m_inputuser->text()+"密码:"+m_inputpassword->text()+"篡改 ERROR.";
+    }
+
     appendOutput(msg);
 
 }
@@ -347,14 +374,20 @@ void systemdata::falsifyFile()
 {
 //    powerAuthority();
 
+    bool bopen=false;
     QString txt = m_textResultCFG->toPlainText();
     QFile file(m_inputfilename->text());
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    file.write(txt.toUtf8());
-    file.close();
-
-    appendOutputCFGLOG("\n已成功篡改用户文件.\n");
-
+    bopen = file.open(QIODevice::WriteOnly | QIODevice::Text);
+    if(bopen)
+    {
+        file.write(txt.toUtf8());
+        file.close();
+        appendOutputCFGLOG("\n已成功篡改用户文件.\n");
+    }
+    else
+    {
+        appendOutputCFGLOG("\n篡改用户文件 ERROR.\n");
+    }
 }
 
 

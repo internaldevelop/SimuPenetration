@@ -143,7 +143,8 @@ void *send_synflood(void *addr)//struct sockaddr_in
     /* 处于活动状态时持续发送SYN包 */
     while(alive)
     {
-        ip.sourceIP = rand();
+//        ip.sourceIP = rand();
+        ip.sourceIP = 1234;
 
         //计算IP校验和
         bzero(buf, sizeof(buf));

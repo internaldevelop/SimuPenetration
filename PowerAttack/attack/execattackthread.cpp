@@ -104,6 +104,7 @@ void ExecAttackThread::run()
             emit attackResult("synflood attack...");
             break;
         case ICMPFLOOD:
+            picmp->do_main(ba.data());
             emit attackResult("icmpflood attack...");
             break;
         case LANDATTACK:

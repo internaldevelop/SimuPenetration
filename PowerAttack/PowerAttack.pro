@@ -23,6 +23,11 @@ DEFINES += LINUX QT_DEPRECATED_WARNINGS
 DEFINES += DAVE_LITTLE_ENDIAN
 LIBS    += -lplcqtlib
 
+LIBS    += -Wall
+LIBS    += -pedantic
+LIBS    += -lutil
+#g++ -Wall -pedantic -O2 -std=c++11 -pthread -o dcow dcow.cpp -lutil
+
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -58,7 +63,8 @@ SOURCES += \
     attack/icmp_flood.cpp \
     attack/landattack.cpp \
     attack/execattackthread.cpp \
-    kingview/kingview.cpp
+    kingview/kingview.cpp \
+    dirtycow/dcow.cpp
 
 HEADERS += \
     powerattack.h \
@@ -87,7 +93,8 @@ HEADERS += \
     attack/icmp_flood.h \
     attack/landattack.h \
     attack/execattackthread.h \
-    kingview/kingview.h
+    kingview/kingview.h \
+    dirtycow/dcow.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

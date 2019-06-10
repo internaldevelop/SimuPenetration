@@ -21,11 +21,11 @@ PowerAttack::PowerAttack(QWidget *parent)
 
     /********* show   boot   time   **************/
     start_time_widget = new Boot_Start_Time();
-    tmr_show_start_time = new QTimer(this);
-    connect(tmr_show_start_time, SIGNAL(timeout()), this, SLOT(show_start_time()));
-    tmr_show_start_time->start(10000);
-    tmr_hide_start_time = new QTimer(this);
-    connect(tmr_hide_start_time, SIGNAL(timeout()), this, SLOT(hide_start_time()));
+//    tmr_show_start_time = new QTimer(this);
+//    connect(tmr_show_start_time, SIGNAL(timeout()), this, SLOT(show_start_time()));
+//    tmr_show_start_time->start(10000);
+//    tmr_hide_start_time = new QTimer(this);
+//    connect(tmr_hide_start_time, SIGNAL(timeout()), this, SLOT(hide_start_time()));
 
     // TODO: should rewrite the modules for the root privileges
     // set the not-verify-root mode
