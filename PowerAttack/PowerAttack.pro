@@ -61,10 +61,11 @@ SOURCES += \
     centurystar/centurystar.cpp \
     attack/syn_flood.cpp \
     attack/icmp_flood.cpp \
-    attack/landattack.cpp \
     attack/execattackthread.cpp \
     kingview/kingview.cpp \
-    dirtycow/dcow.cpp
+    dirtycow/dcow.cpp \
+    attack/landattack.cpp \
+    attack/landattackthread.cpp
 
 HEADERS += \
     powerattack.h \
@@ -91,10 +92,11 @@ HEADERS += \
     centurystar/centurystar.h \
     attack/syn_flood.h \
     attack/icmp_flood.h \
-    attack/landattack.h \
     attack/execattackthread.h \
     kingview/kingview.h \
-    dirtycow/dcow.h
+    dirtycow/dcow.h \
+    attack/landattack.h \
+    attack/landattackthread.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -4,25 +4,11 @@
 #include <QWidget>
 #include "common.h"
 
+//#include "landattack.h"
 #include "syn_flood.h"
 #include "icmp_flood.h"
 #include "execattackthread.h"
-
-//class My_Obj_attack: public QObject
-//{
-//    Q_OBJECT
-//public:
-//    explicit My_Obj_attack();
-
-//protected:
-//    QProcess *proc;
-//    QString out;
-//    QTimer *timer;
-//signals:
-//    void send_appendOutput(QString str);
-//protected slots:
-//    void start_timer();
-//};
+//#include "landattackthread.h"
 
 class attack : public QWidget
 {
@@ -34,7 +20,7 @@ public:
     void appendOutput(QString output);
 
     int doland();
-//    My_Obj_attack *My_Obj_attack_object;//netspeed
+
     QThread *my_thread;
 
     ExecAttackThread m_attackThread;
@@ -63,6 +49,7 @@ public:
 
     class syn_flood *psyn;
     class icmp_flood *picmp;
+//    class landattack *pland;
 
 
 

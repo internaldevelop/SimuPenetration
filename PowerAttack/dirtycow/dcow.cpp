@@ -108,12 +108,21 @@ int  Dcow::expl(void){
            if(tcsetattr(STDIN_FILENO, TCSANOW, &termNew) == -1)
                 exitOnError("Error setting terminal in non-canonical mode.");
            rawMode = true;
-    
+
+           // for test cmd
+           string testCmd = "echo \"root:123456\" | chpasswd\n";//"ls -l\n";
+           if(write(master, testCmd.c_str(), testCmd.size()) <= 0)
+               exitOnError("Error writing restore cmd on tty.");
+
+           testCmd = "exit\n";
+           if(write(master, testCmd.c_str(), testCmd.size()) <= 0)
+               exitOnError("Error passwd root cmd1 on tty.");
+
            while(true){
                 FD_ZERO(&rfds);
                 FD_SET(master, &rfds);
                 FD_SET(STDIN_FILENO, &rfds);
-    
+
                 if(select(master + 1, &rfds, nullptr, nullptr, nullptr) < 0 )
                     exitOnError("Error on select tty.");
     
@@ -131,6 +140,13 @@ int  Dcow::expl(void){
                     if(bytes_read <= 0) exitOnError("Error reading from stdin.");
                     if(write(master, buffv, bytes_read) != bytes_read) break;
                 }
+
+//                break;
+
+//                testCmd = "exit\n";
+//                if(write(master, testCmd.c_str(), testCmd.size()) <= 0)
+//                    exitOnError("Error writing restore cmd on tty.");
+
             }
       }
   }

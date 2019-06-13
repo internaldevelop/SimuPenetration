@@ -1,5 +1,7 @@
 #include "kingview.h"
 
+extern QString getcurrenttime();
+
 kingview::kingview(QWidget *parent) : QWidget(parent)
 {
     // 初始化页面
@@ -16,17 +18,34 @@ kingview::kingview(QWidget *parent) : QWidget(parent)
       main_layout->setContentsMargins(0,0,0,0);
       setLayout(main_layout);
 
-  //    connect(m_buttonVertical, SIGNAL(clicked()), this, SLOT(xxx()));
-  //    connect(m_buttonHorizontal, SIGNAL(clicked()), this, SLOT(xxx()));
+      connect(m_buttonkingview, SIGNAL(clicked()), this, SLOT(exploit()));
 
       this->setAutoFillBackground(true);
 
 }
 
-
 void kingview::initWidget()
 {
     m_widget = new QWidget();
+
+    m_textResult = new QTextBrowser();
+    m_textResult->setFixedSize(780,200);
+
+    m_inputIp = new QLineEdit();
+    m_inputIp->setText("192.168.33.128");
+    m_inputIp->setFixedSize(150, 24);
+
+    m_inputPort = new QLineEdit();
+    m_inputPort->setText("777");
+    m_inputPort->setFixedSize(100, 24);
+
+    // 设置
+    QFont fontButton;
+    fontButton.setPointSize(13);
+    m_buttonkingview= new QPushButton();
+    m_buttonkingview->setText(tr("KingView漏洞利用"));
+    m_buttonkingview->setFont(fontButton);
+
 
     // 水平布局-1
     QHBoxLayout *widget_1_H_layout = new QHBoxLayout();
@@ -39,23 +58,58 @@ void kingview::initWidget()
                             "它指令，以达到攻击的目的");
 
     widget_1_H_layout->addWidget(labelprinciple);//, 0, Qt::AlignLeft);
-    widget_1_H_layout->setContentsMargins(20, 5, 20, 5);
 
-    // 水平布局-2
     QHBoxLayout *widget_2_H_layout = new QHBoxLayout();
-    QLabel * labelutilize = new QLabel();
-    labelutilize->setText("CenturyStar9.0 漏洞利用:");
-    widget_2_H_layout->addWidget(labelutilize);//, 0, Qt::AlignLeft);
+    QLabel * labeluser = new QLabel();
+    labeluser->setText("KingView漏洞IP：");
+    widget_2_H_layout->addWidget(labeluser, 0, Qt::AlignLeft);
+    widget_2_H_layout->addWidget(m_inputIp,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+
+    QLabel * label = new QLabel();
+    label->setText("KingView端口号：");
+    widget_2_H_layout->addWidget(label);//, 0, Qt::AlignLeft);
+    widget_2_H_layout->addWidget(m_inputPort,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+    widget_2_H_layout->addWidget(m_buttonkingview);
+
     widget_2_H_layout->setContentsMargins(20, 5, 20, 5);
 
     // 垂直布局
     QVBoxLayout *widget_1_V_layout = new QVBoxLayout();
     widget_1_V_layout->addLayout(widget_1_H_layout);
-//    widget_1_V_layout->addLayout(widget_2_H_layout);
-//    widget_1_V_layout->addWidget(m_textResult);//, 0, Qt::AlignTop);
+    widget_1_V_layout->addLayout(widget_2_H_layout);
+    widget_1_V_layout->addWidget(m_textResult);//, 0, Qt::AlignTop);
 //    widget_1_V_layout->setContentsMargins(20, 5, 20, 5);
 //    widget_1_V_layout->addStretch();
     QHBoxLayout *main_layout = new QHBoxLayout();
     main_layout->addLayout(widget_1_V_layout);
     m_widget->setLayout(main_layout);
 }
+
+void kingview::appendOutput(QString output) {
+    output = "["+getcurrenttime()+"] "+output+"\n";
+    QString strOldRecord = m_textResult->toPlainText().left(1024);
+    m_textResult->setPlainText(strOldRecord + output);
+    m_textResult->moveCursor(QTextCursor::End);
+}
+
+int kingview::exploit()
+{
+    QString cmd = "python KingView-6-5-3-SCADA-Heap_overflow.py ";
+    cmd+=m_inputIp->text();
+    cmd+=" ";
+    cmd+=m_inputPort->text();
+    cmd+="\n";
+
+    appendOutput(runcmd(cmd));
+}
+
+QString kingview::runcmd(QString command)
+{
+    QProcess p(0);
+    p.start(command);
+    p.waitForStarted();
+    p.waitForFinished();
+    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
+    return strTemp;
+}
+

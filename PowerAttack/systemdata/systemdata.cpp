@@ -395,6 +395,8 @@ void systemdata::appendOutput(QString output) {
     output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultPWD->toPlainText().left(1024);
     m_textResultPWD->setPlainText(strOldRecord + output);
+    m_textResultPWD->moveCursor(QTextCursor::End);
+
 
 }
 
@@ -402,12 +404,16 @@ void systemdata::appendOutputCFG(QString output) {
     output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultCFG->toPlainText().left(1024);
     m_textResultCFG->setPlainText(strOldRecord + output);
+    m_textResultCFG->moveCursor(QTextCursor::End);
+
 }
 
 void systemdata::appendOutputCFGNEW(QString output) {
     output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultCFGNew->toPlainText().left(1024);
     m_textResultCFGNew->setPlainText(strOldRecord + output);
+    m_textResultCFGNew->moveCursor(QTextCursor::End);
+
 }
 
 void systemdata::appendOutputCFGLOG(QString output) {
@@ -416,6 +422,7 @@ void systemdata::appendOutputCFGLOG(QString output) {
     output = "["+getcurrenttime()+"] "+output+"\n";
     QString strOldRecord = m_textResultCFGLOG->toPlainText().left(1024);
     m_textResultCFGLOG->setPlainText(strOldRecord + output);
+    m_textResultCFGLOG->moveCursor(QTextCursor::End);
 
 }
 

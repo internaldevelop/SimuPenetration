@@ -10,6 +10,7 @@ public:
 
     void set_sig_int();
     int do_main(char *strip,int port);
+    int do_land(char *strip,int port);
 
 };
 

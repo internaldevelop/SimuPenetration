@@ -219,5 +219,7 @@ void controlcmd::appendOutput(QString output)
 
     QString strOldRecord = m_textResult->toPlainText().left(1024);
     m_textResult->setPlainText(strOldRecord + output);
+    m_textResult->moveCursor(QTextCursor::End);
+
 
 }
