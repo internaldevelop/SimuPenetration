@@ -245,7 +245,6 @@ void *send_landattack(void *addr)//struct sockaddr_in
     while(alive)
     {
 //        ip.sourceIP = rand();
-//        ip.sourceIP = 1234;
 
         //计算IP校验和
         bzero(buf, sizeof(buf));
@@ -287,6 +286,8 @@ void sig_int(int signo)//
 void syn_flood::set_sig_int()//
 {
     alive = 0;
+    printf("pthread exit!,线程退出！\n");
+
 }
 
 syn_flood::syn_flood()

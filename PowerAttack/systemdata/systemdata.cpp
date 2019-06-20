@@ -49,14 +49,29 @@ systemdata::systemdata(QWidget *parent) : QWidget(parent)
     connect(m_buttonFalsifyFile, SIGNAL(clicked()), this, SLOT(falsifyFile()));
     connect(m_buttonOpenFile, SIGNAL(clicked()), this, SLOT(showFileinfo()));
 
-//    connect(m_textResultCFG, SIGNAL(cursorPositionChanged()), this, SLOT(autoScroll()));
-//    connect(m_textResultPWD, SIGNAL(cursorPositionChanged()), this, SLOT(autoScroll()));
-
+    connect(&m_cmdThread, &ExecScriptsSlaveThread::scriptResult, this, &systemdata::processScriptResult);
+    // 启动线程
+    m_cmdThread.startSlave();
 
     this->setAutoFillBackground(true);
 }
 
 
+void systemdata::processScriptResult(const QString & result) {
+    // 对脚本执行结果用换行符分割
+
+//    switch(printlog)
+//    {
+//    case ONLINE:
+//        appendOutputOn(result);
+//        break;
+//    case OFFLINE:
+//        appendOutputOff(result);
+//        break;
+//    }
+    appendOutput(result);
+
+}
 void systemdata::initItemList(){
     m_itemList = new QListWidget();
 
@@ -110,12 +125,12 @@ void systemdata::initPasswordWidget()
     QLabel * labeluser = new QLabel();
     labeluser->setText("请输入用户：");
     widget_1_H_layout->addWidget(labeluser,0,Qt::AlignLeft);//, 0, Qt::AlignLeft);
-    widget_1_H_layout->addWidget(m_inputuser,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+    widget_1_H_layout->addWidget(m_inputuser,70,Qt::AlignLeft);//, 70, Qt::AlignRight);
 
     QLabel * labelpwd = new QLabel();
     labelpwd->setText("请输入密码：");
     widget_1_H_layout->addWidget(labelpwd,0,Qt::AlignLeft);//, 0, Qt::AlignLeft);
-    widget_1_H_layout->addWidget(m_inputpassword,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+    widget_1_H_layout->addWidget(m_inputpassword,70,Qt::AlignLeft);//, 70, Qt::AlignRight);
 
 
     widget_1_H_layout->setContentsMargins(20, 5, 20, 5);
@@ -142,7 +157,7 @@ void systemdata::initSysConfigWidget()
     m_widgetSysConfig= new QWidget();
     m_inputfilename = new QLineEdit();
     m_inputfilename->setText("/etc/hosts");//("/home/ljz/txt");
-    m_inputfilename->setFixedSize(360, 24);
+    m_inputfilename->setFixedSize(500, 24);
 
     m_textResultCFG = new QTextEdit();
     m_textResultCFGNew = new QTextEdit();
@@ -164,13 +179,14 @@ void systemdata::initSysConfigWidget()
     m_buttonFalsifyFile->setText(tr("篡改用户文件"));
     m_buttonFalsifyFile->setFont(fontButton);
 
+    m_buttonFalsifyFile->setEnabled(false);
+
     // 水平布局-1
     QHBoxLayout *widget_1_H_layout = new QHBoxLayout();
     QLabel * labeluser = new QLabel();
     labeluser->setText("请输入篡改文件路径：");
     widget_1_H_layout->addWidget(labeluser);//, 0, Qt::AlignLeft);
-    widget_1_H_layout->addWidget(m_inputfilename);//, 70, Qt::AlignRight);
-    widget_1_H_layout->addWidget(m_buttonOpenFile);//, 70, Qt::AlignRight);
+    widget_1_H_layout->addWidget(m_inputfilename, 70, Qt::AlignLeft);//, 70, Qt::AlignRight);
 
 //    QHBoxLayout *widget_3_H_layout = new QHBoxLayout();
 //    QLabel * labelinsert = new QLabel();
@@ -181,6 +197,7 @@ void systemdata::initSysConfigWidget()
 
     // 水平布局-2
     QHBoxLayout *widget_2_H_layout = new QHBoxLayout();
+    widget_2_H_layout->addWidget(m_buttonOpenFile);//, 70, Qt::AlignRight);
     widget_2_H_layout->addWidget(m_buttonFalsifyFile);//, 0, Qt::AlignLeft);
     widget_2_H_layout->setContentsMargins(20, 5, 20, 5);
 
@@ -201,80 +218,6 @@ void systemdata::initSysConfigWidget()
 
 
 void systemdata::initLeft() {
-//    left_widget = new QWidget();
-//    label = new QLabel();//图片
-//    time_label = new QLabel();
-//    sys_test_button = new QPushButton();//检测按钮
-//    left_widget->resize(650, 500);
-
-//    QPixmap label_pixmap(":/sys_test_widget/check");
-//    label->setPixmap(label_pixmap);
-//    label->setFixedSize(label_pixmap.size());
-
-//    QFont suggest_font = time_label->font();//返回默认应用程序字体
-//    suggest_font.setPointSize(15);//字体大小
-//    suggest_font.setBold(true);//加粗
-//    time_label->setFont(suggest_font);
-//    time_label->setObjectName("grayLabel");
-//    time_label->setText(tr("welcome make test"));
-
-//    QFont system_safe_font = this->font();
-//    system_safe_font.setPointSize(14);
-//    system_safe_font.setBold(true);
-
-//    QPixmap pixmap(":/sys_test_widget/power");
-//    sys_test_button->setIcon(pixmap);
-//    sys_test_button->setStyleSheet("border:2px groove gray;border-radius:10px;padding:2px 4px;");
-//    sys_test_button->setIconSize(pixmap.size());
-//    sys_test_button->setFixedSize(180, 70);
-//    sys_test_button->setObjectName("greenButton");
-
-//    QFont power_font = sys_test_button->font();
-//    power_font.setPointSize(16);
-//    sys_test_button->setFont(power_font);
-//    sys_test_button->setText(tr("一键测评"));
-
-//    QVBoxLayout *v_layout = new QVBoxLayout();//纵向布局
-//    v_layout->addWidget(time_label);
-////    v_layout->addWidget(system_safe_label);
-//    v_layout->addStretch();//平均分配的意思
-//    v_layout->setSpacing(15);//空隙
-//    v_layout->setContentsMargins(30, 30, 0, 0);
-
-//    QHBoxLayout *h_layout = new QHBoxLayout();//横向布局
-//    h_layout->addWidget(label, 0, Qt::AlignTop);//这个枚举类型是用来描述对齐方式的
-//    h_layout->addLayout(v_layout);
-//    h_layout->addStretch();
-//    h_layout->setSpacing(20);
-//    h_layout->setContentsMargins(30, 20, 0, 0);
-
-//    QVBoxLayout *main_layout = new QVBoxLayout();
-//    main_layout->addLayout(h_layout);
-//    main_layout->addWidget(sys_test_button, 0, Qt::AlignCenter);
-
-//    main_layout->addStretch();
-//    main_layout->setSpacing(0);
-//    main_layout->setContentsMargins(0, 0, 0, 0);
-
-//    left_widget->setLayout(main_layout);
-
-//    this->setAutoFillBackground(true);
-//    left_widget->setStyleSheet("QPushButton{color:#030303;background:#63B8FF; border-style: double;\
-//                               border-width: 4px;\
-//                               border-color: #ffcc00;}");
-//    this->setStyleSheet("QTextBrowser{background-color: #eaeaea; border:1px solid grey; border-radius: 8px;}");
-
- /*
-    left_widget->setStyleSheet("QPushButton{image:url(:/skin/0.png); subcontrol-position: right center;\
-                               color:black; background-color: red;\
-                               border-style: double;\
-                               border-width: 2px;\
-                               border-radius: 10px;\
-                               border-color: #ffccff;\
-                               font: bold 18px;\
-                               text-align: top;\
-                               min-width: 8em;}");
-*/
 
 }
 
@@ -287,6 +230,8 @@ void systemdata::showFileinfo()
 //    m_textResultCFG->setPlaceholderText(result);
     m_textResultCFG->setPlainText(result);
     m_textResultCFGNew->setPlainText(result);
+
+    m_buttonFalsifyFile->setEnabled(true);
 
     appendOutputCFGLOG("文件打开成功，左侧为原始文件，右侧文件内容可编辑，修改后按篡改操作保存修改内容.");
 }
@@ -314,31 +259,13 @@ QString systemdata::runcmd(QString command)
 
 void systemdata::falsifyPassword()
 {
-    appendOutput("current user:");
+
+    appendOutput("whoami:");
     appendOutput(runcmd("whoami"));
     appendOutput("开始篡改用户密码");
+
  //   powerAuthority();
-//echo "qa:1234" | chpasswd
-
-//    QString cmd = "echo ";
-//    cmd+=m_inputuser->text();
-//    cmd+=+":";
-//    cmd+=m_inputpassword->text();
-//    cmd+=" | chpasswd";
-//    QString result = CSysUtils::execCmd(cmd);
-//    appendOutput(result);
-
-//    QProcess proc;
-//    QString cmd = "echo";
-//    QStringList paramsList;
-//    paramsList.append(m_inputuser->text()+":"+m_inputpassword->text()+"| chpasswd");
-////    paramsList.append("| chpasswd");
-//    proc.start(cmd,paramsList);
-
-//    // 读取命令返回结果
-//    proc.waitForFinished();
-//    QString usageInfo = proc.readAllStandardOutput();
-//    appendOutput(usageInfo);
+//echo "lvjz:1234" | chpasswd
 
     QString cmd = "echo ";
     cmd+=m_inputuser->text();
@@ -347,27 +274,39 @@ void systemdata::falsifyPassword()
     cmd+=" | chpasswd";
     QByteArray ba = cmd.toLatin1(); // must
 
-    FILE *pf;
-    char buffer[4096];
-    pf = popen(ba.data(), "r");
-    fread(buffer, sizeof(buffer), 1, pf);
-    printf("%s\n", buffer);
-    appendOutput(buffer);
-    pclose(pf);
+//    FILE *pf;
+//    char buffer[4096];
+//    pf = popen(ba.data(), "r");
+//    fread(buffer, sizeof(buffer), 1, pf);
+//    printf("%s\n", buffer);
+//    appendOutput(buffer);
+//    pclose(pf);
+
+//    QFile file("password.sh");
+//    file.open(QIODevice::WriteOnly | QIODevice::Text);
+//    file.write(ba.data());
+//    file.write("\n");
+//    file.close();
+//    QString script = g_sWorkingPath + "/password.sh";
+//    m_cmdThread.execScipts(script);
+
+//    m_cmdThread.execShell(ba.data());
 
     int iret = system(ba.data());
     QString msg="";
     if(iret==0)
     {
-        msg = "用户:"+m_inputuser->text()+"密码:"+m_inputpassword->text()+"篡改成功.";
+        msg = "用户:"+m_inputuser->text()+"密码:"+m_inputpassword->text()+" 篡改成功.";
     }
     else
     {
-        msg = "用户:"+m_inputuser->text()+"密码:"+m_inputpassword->text()+"篡改 ERROR.";
+        appendOutput("Authentication token manipulation error");
+        appendOutput("password not changed");
+        msg = "用户:"+m_inputuser->text()+"密码:"+m_inputpassword->text()+" 篡改失败.";
     }
 
     appendOutput(msg);
-
+/**/
 }
 
 void systemdata::falsifyFile()

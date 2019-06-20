@@ -2,6 +2,7 @@
 #define SUPERPRIVILEGE_H
 
 #include "common.h"
+#include "execscriptsslavethread.h"
 
 class superprivilege : public QWidget
 {
@@ -33,8 +34,10 @@ public slots:
     void onlineAttack();
     void offlineAttackPython();
     void offlineAttackJohn();
+    void processScriptResult(const QString & result);
 
 private:
+    ExecScriptsSlaveThread  m_cmdThread;
     // 左侧功能列表
     QListWidget *       m_itemList;
     QStackedWidget*     m_stackWidget;

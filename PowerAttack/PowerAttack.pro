@@ -65,7 +65,8 @@ SOURCES += \
     kingview/kingview.cpp \
     dirtycow/dcow.cpp \
     attack/landattack.cpp \
-    attack/landattackthread.cpp
+    attack/landattackthread.cpp \
+    superprivilege/execscriptsslavethread.cpp
 
 HEADERS += \
     powerattack.h \
@@ -96,7 +97,8 @@ HEADERS += \
     kingview/kingview.h \
     dirtycow/dcow.h \
     attack/landattack.h \
-    attack/landattackthread.h
+    attack/landattackthread.h \
+    superprivilege/execscriptsslavethread.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

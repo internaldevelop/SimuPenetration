@@ -36,7 +36,8 @@ void controlcmd::initWidget()
 {
     m_widget = new QWidget();
     m_textResult = new QTextEdit();
-    m_textResult->setFixedSize(680,320);
+    m_textResult->setFixedSize(850,320);
+    m_textResult->setReadOnly(true);
 
     m_inputIp = new QLineEdit();
     m_inputIp->setText("192.168.20.151");//192.168.1.50");
@@ -49,7 +50,6 @@ void controlcmd::initWidget()
     // 设置
     QFont fontButton;
     fontButton.setPointSize(13);
-
 
     m_buttonStartPLC= new QPushButton();
     QPixmap pixmap(":/sys_test_widget/start");
@@ -92,41 +92,66 @@ void controlcmd::initWidget()
     QHBoxLayout *widget_1_H_layout = new QHBoxLayout();
     QLabel * labeluser = new QLabel();
     labeluser->setText("请输入IP：");
-    widget_1_H_layout->addWidget(labeluser, 0, Qt::AlignLeft);
-    widget_1_H_layout->addWidget(m_inputIp,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+    widget_1_H_layout->addWidget(labeluser);
+    widget_1_H_layout->addWidget(m_inputIp,70,Qt::AlignLeft);//, 70, Qt::AlignRight);
+//    widget_1_H_layout->addWidget(labeluser);
+//    widget_1_H_layout->addWidget(m_inputIp);//, 70, Qt::AlignRight);
 
     QLabel * labelpwd = new QLabel();
     labelpwd->setText("请输入端口号：");
     widget_1_H_layout->addWidget(labelpwd);//, 0, Qt::AlignLeft);
-    widget_1_H_layout->addWidget(m_inputPort,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
+    widget_1_H_layout->addWidget(m_inputPort,70,Qt::AlignLeft);//, 70, Qt::AlignRight);
+//    widget_1_H_layout->addWidget(labelpwd);//, 0, Qt::AlignLeft);
+//    widget_1_H_layout->addWidget(m_inputPort);//, 70, Qt::AlignRight);
 
     widget_1_H_layout->setContentsMargins(20, 5, 20, 5);
+
     // 水平布局-2
     QHBoxLayout *widget_2_H_layout = new QHBoxLayout();
     widget_2_H_layout->addWidget(m_buttonStartPLC);//, 0, Qt::AlignLeft);
     widget_2_H_layout->addWidget(m_buttonStopPLC);//, 0, Qt::AlignLeft);
     widget_2_H_layout->setContentsMargins(20, 5, 20, 5);
+
     // 垂直布局
     QVBoxLayout *widget_1_V_layout = new QVBoxLayout();
     widget_1_V_layout->addLayout(widget_1_H_layout);
     widget_1_V_layout->addLayout(widget_2_H_layout);
-    widget_1_V_layout->addWidget(m_textResult);//, 0, Qt::AlignTop);
-//    widget_1_V_layout->setContentsMargins(20, 5, 20, 5);
-//    widget_1_V_layout->addStretch();
+    widget_1_V_layout->addWidget(m_textResult,0,Qt::AlignCenter);//, 0, Qt::AlignTop);
     QHBoxLayout *main_layout = new QHBoxLayout();
     main_layout->addLayout(widget_1_V_layout);
-//    main_layout->setContentsMargins(0, 0, 0, 0);
 
     m_widget->setLayout(main_layout);
+}
+
+void dec2hex(int x,char s[])
+{
+ int i,j,c;
+
+ for(i=-1;x>0;i)
+ {
+  s[++i]=x%16;
+  x/=16;
+ }
+ for(j=i;j>=0;j--)
+ {
+     if(s[j]<10)s[j]+=48;
+     else s[j]+=55;
+     s[i+1]='\0';
+ }
+ for(j=0;j<i;j++,i--)
+ {c=s[j];s[j]=s[i];s[i]=c;}
+
 }
 
 void controlcmd::stopPLC()
 {
     appendOutput("正在进行PLC通讯，发送关闭指令：");
-    appendOutput("776d736762000021000025000010000c000000000000000100000000776d736765");
-    appendOutput("PLC关闭成功.");
+//    appendOutput("776d736762000021000025000010000c000000000000000100000000776d736765"); //AB
+    appendOutput("3201000000020010000029000000000009505f50524f4752414d"); //S7300
+
 
     int iret=0;
+    char strret[32]={0x00};
 
     ConnectPlc();
 
@@ -140,15 +165,29 @@ void controlcmd::stopPLC()
         plcok = false;
     }
 
+    if(iret==0)
+    {
+        appendOutput("PLC关闭成功.");
+    }
+    else
+    {
+        appendOutput("PLC关闭失败.");
+        dec2hex(iret,strret);
+        appendOutput(strret);
+    }
+
+
+
 }
 
 void controlcmd::startPLC()
 {
     appendOutput("正在进行PLC通讯，发送开启指令：");
-    appendOutput("776d736762000021000025000010000c000000000000000000000000776d736765");
-    appendOutput("PLC 开启指令成功.");
+//    appendOutput("776d736762000021000025000010000c000000000000000000000000776d736765");AB
+    appendOutput("3201000000010014000028000000000000fd000009505f50524f4752414d");//S7300
 
     int iret=0;
+    char strret[32]={0x00};
 
     ConnectPlc();
 
@@ -162,7 +201,17 @@ void controlcmd::startPLC()
         plcok = false;
     }
 
+    if(iret==0)
+    {
+        appendOutput("PLC 开启指令成功.");
+    }
+    else
+    {
+        appendOutput("PLC 开启指令失败.");
+        dec2hex(iret,strret);
+        appendOutput(strret);
 
+    }
 }
 
 void controlcmd::ConnectPlc()

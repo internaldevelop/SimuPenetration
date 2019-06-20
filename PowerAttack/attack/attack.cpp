@@ -320,6 +320,7 @@ void attack::initWidget()
     m_widget = new QWidget();
     m_textResult = new QTextBrowser();
     m_textResult->setFixedSize(680,320);
+    m_textResult->setReadOnly(true);
 
     m_inputIp = new QLineEdit();
 //    m_inputIp->setText("172.16.113.56");
@@ -331,10 +332,10 @@ void attack::initWidget()
     m_inputPort->setText("445");//("102");//("6666");
     m_inputPort->setFixedSize(100, 24);
 
-
     // 设置
     QFont fontButton;
     fontButton.setPointSize(13);
+
     m_buttonSYN= new QPushButton();
     m_buttonSYN->setText(tr("SYN Flood攻击"));
     m_buttonSYN->setFont(fontButton);
@@ -366,17 +367,15 @@ void attack::initWidget()
     widget_2_H_layout->addWidget(m_buttonSYN,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
     widget_2_H_layout->addWidget(m_buttonICMP,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
     widget_2_H_layout->addWidget(m_buttonLAND,0,Qt::AlignLeft);//, 70, Qt::AlignRight);
-
     widget_2_H_layout->setContentsMargins(20, 5, 20, 5);
+
     // 垂直布局
     QVBoxLayout *widget_1_V_layout = new QVBoxLayout();
     widget_1_V_layout->addLayout(widget_1_H_layout);
     widget_1_V_layout->addLayout(widget_2_H_layout);
-
     widget_1_V_layout->addWidget(m_textResult);//, 0, Qt::AlignTop);
     QHBoxLayout *main_layout = new QHBoxLayout();
     main_layout->addLayout(widget_1_V_layout);
-//    main_layout->setContentsMargins(0, 0, 0, 0);
 
     m_widget->setLayout(main_layout);
 }

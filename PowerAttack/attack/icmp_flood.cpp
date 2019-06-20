@@ -91,6 +91,8 @@ static void dos_icmp(void)
      to.sin_port=htons(0);
      //发送数据
      sendto(rawsock,packet,pktsize,0,(struct sockaddr*)&to,sizeof(struct sockaddr));
+     printf(".");
+
      free(packet);       //释放内存
 
 

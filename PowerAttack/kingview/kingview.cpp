@@ -30,6 +30,7 @@ void kingview::initWidget()
 
     m_textResult = new QTextBrowser();
     m_textResult->setFixedSize(780,200);
+    m_textResult->setReadOnly(true);
 
     m_inputIp = new QLineEdit();
     m_inputIp->setText("192.168.33.128");
@@ -99,6 +100,9 @@ int kingview::exploit()
     cmd+=" ";
     cmd+=m_inputPort->text();
     cmd+="\n";
+
+    appendOutput(cmd);
+    appendOutput("利用kingview漏洞，本程序将执行shellcode启动一个NC服务，端口号为8888,请启动一个新终端输入:nc ip地址 8888进行验证。");
 
     appendOutput(runcmd(cmd));
 }
